@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  @font-face {
+    font-family: "Helvetica";
+    font-weight: 400;
+    src: url(./public/fonts/Helvetica.tff) format(tff);
+  }
+  @font-face {
+    font-family: "Helvetica";
+    font-weight: 200;
+    src: url(./public/fonts/Helvetica-light.tff) format(tff);
+  }
+}
+@layer utilities {
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+.IconSize-md{
+    font-size: 1.4rem !important;
+}
+
+.IconSize-lg{
+    font-size : 2rem !important;
+}
+
+/* For Firefox Browser */
+.scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(0 0 0 / 20%) #fff;
+}
+
+
+/* For Chrome, EDGE, Opera, Others */
+.scrollbar::-webkit-scrollbar {
+  width:5px !important;
+}
+
+.scrollbar::-webkit-scrollbar-track { 
+  background: #fff;
+}
+
+.scrollbar::-webkit-scrollbar-thumb { 
+    background:rgb(0 0 0 / 20%);
+    border-radius:5px;
+}
