@@ -23,8 +23,10 @@ module.exports = {
         myMedium: 470,
       },
       height:{
-        vh85:"85vh"
+        vh85:"85vh",
+        vh89:"89vh"
       },
+      
     },
   },
   plugins: [],

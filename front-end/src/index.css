@@ -25,6 +25,7 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+  
 }
 .IconSize-md{
     font-size: 1.4rem !important;
@@ -33,7 +34,12 @@
 .IconSize-lg{
     font-size : 2rem !important;
 }
-
+.w-90per{
+  width:90%;
+}
+.h-90per{
+  height:90%;
+}
 /* For Firefox Browser */
 .scrollbar {
   scrollbar-width: thin;
@@ -53,4 +59,11 @@
 .scrollbar::-webkit-scrollbar-thumb { 
     background:rgb(0 0 0 / 20%);
     border-radius:5px;
+}
+.top-full-0.25rem{
+    top : calc(100% + 0.25rem)
+}
+/* removing touch effect for touch screen devices   */
+*{
+    -webkit-tap-highlight-color: transparent;
 }

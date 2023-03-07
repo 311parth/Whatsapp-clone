@@ -2,11 +2,15 @@ import {createSlice} from "@reduxjs/toolkit"
 
 export const activeChatIdSlice = createSlice({
     name:"activeChatIdSlice",
-    initialState:0,
+    initialState:{
+        id:0,
+        username: "",
+    },
     reducers:{
-        setActiveChatId(state,id){
-            return {type:"setActiveChatId",id : id.payload}
-        }
+        setActiveChatId(state,action){
+            state.id=action.payload.id;
+            state.username=action.payload.username;
+        },
     }
 })
 

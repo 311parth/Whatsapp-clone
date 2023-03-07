@@ -1,31 +1,46 @@
-import React from 'react'
+import React,{useState,useEffect,useRef} from 'react'
 import {useDispatch,useSelector} from "react-redux"
 import { setActiveChatId } from '../store/activeChatIdSlice';
+import { useNavigate ,useLocation} from "react-router-dom";
+import  store from "../store/store.js"
+import getStoreState from  "../helper/getStoreState.js"
 function ChatList(props) {
-    // const activeChatId = useSelector((state)=>state)
-    // console.log(activeChatId)
+
+    
     const dispatch = useDispatch();
-    const activeChatId = useSelector((state)=>state)
+    var activeChatId = useSelector((state)=>state.activeChatIdSlice)
+    const navigate = useNavigate();
+    const [innerW,setInnerW] = useState();
+    window.addEventListener("resize",()=>{
+        setInnerW(window.innerWidth);   
+    })
+    useEffect(() => {
+        setInnerW(window.innerWidth);
+    }, [])
     const openChat = ()=>{
+        dispatch(setActiveChatId({id: props.ChatListId,username: props.ChatListUsername }))
         // console.log(activeChatId,props.ChatListId)
-        dispatch(setActiveChatId(props.ChatListId))
-        // console.log(activeChatId,props.ChatListId)
+        // console.log(activeChatIdRef);
+        if(innerW<=700){
+            navigate(`/chat/${getStoreState().activeChatIdSlice.id}`)
+        }
     }
+    
     return (
         <>
             <div className="m-0  ChatList container flex flex-row items-center h-16   cursor-pointer hover:text-primary-green hover:bg-primary-light-gray " onClick={openChat}>
-                <div className="chatListLeft mx-3  w-1/12">
+                <div className="chatListLeft mx-4  w-1/12 min-w-fit">
                     <img src="/placeholder200_200.svg" alt="" className="w-10 h-10 rounded-full"/>
                 </div>
-                <div className="chatListCenter w-10/12 space-y-1">
+                <div className="chatListCenter w-11/12 space-y-1">
                     <div className="chatListcenterTop text-myMd font-myMedium" >
-                        centerTop {props.ChatListId}
+                        centerTop {props.ChatListId}    
                     </div>
                     <div className="chatListcenterBottom text-mySm text-primary-dark-gray ">
                         centerBottom
                     </div>
                 </div>
-                <div className="chatListRight text-sm w-1/12 text-primary-dark-gray ">
+                <div className="chatListRight text-sm w-2/12 text-primary-dark-gray ">
                     9:30
                 </div>
             </div>
