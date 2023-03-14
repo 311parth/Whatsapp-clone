@@ -23,7 +23,7 @@ function HomePage() {
     return (
         <>
         <Provider store={store}>
-            <section className="flex  h-screen bg-primary-green py-2   ">
+            <section className="flex  w-full   h-screen bg-primary-green py-2   ">
                 {innerW<=700 ? 
                 <div className="w-screen  max-h-screen">
                 <Navbar/>

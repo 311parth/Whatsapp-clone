@@ -7,9 +7,9 @@ function PopUpNewContact(props) {
     }
     return (
         <>
-            <div id="PopUpNewContact" className="hidden absolute items-center flex-col bg-sec-light-green  mx-auto " style={{
-                width:"91rem",
-                height:"40rem"
+            <div id="PopUpNewContact" className=" w-screen h-fit absolute items-center flex-col bg-sec-light-green  mx-auto  " style={{
+                // width:"91rem",
+                // height:"40rem"
             }}>
                 {/* <h3>PopupNewcontact</h3> */}
                     <div className="flex justify-between w-full px-5 py-1">

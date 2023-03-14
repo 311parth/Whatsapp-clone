@@ -13,9 +13,9 @@ function App() {
        <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<HomePage /> }></Route>
+          <Route path="/"  element={<LoginPage />}></Route>
+          <Route path="/home" element={<HomePage /> }></Route>
           <Route path="/chat/:chatId" element={<RightSideSection /> }></Route>
-          <Route path="/login"  element={<LoginPage />}></Route>
           <Route path="/signup"  element={<SignupPage />}></Route>
         </Routes>
       </BrowserRouter>
