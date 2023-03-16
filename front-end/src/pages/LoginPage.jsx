@@ -29,6 +29,9 @@ function LoginPage() {
             withCredentials: true
         }).then((response) => {
             console.log(response)
+            if(response && response.data && response.data.authToken){
+                sessionStorage.setItem("secret",response.data.authToken)
+            }
             if(!response.data.logged){
                 toast.error("Login Email or password incorrect")
             }else{

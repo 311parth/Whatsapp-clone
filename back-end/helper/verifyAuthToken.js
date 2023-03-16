@@ -1,5 +1,3 @@
-const express = require("express");
-let router = express.Router();
 const jwt = require("jsonwebtoken");
 
 function verifyToken(req, res, next) {
@@ -15,8 +13,5 @@ function verifyToken(req, res, next) {
         }
     });
 }
-router.get("/",verifyToken,(req,res)=>{
-    res.send("/test get");
-})
 
-module.exports = router;
+module.exports = verifyToken;
