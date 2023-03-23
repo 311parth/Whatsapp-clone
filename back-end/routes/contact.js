@@ -8,12 +8,13 @@ router.post("/addNew",async(req,res)=>{
         username: req.body.username,
         email : req.body.email
     }
+    console.log(req.headers)
     try {
         const response =  await loginModel.findOne({username : reqBody.username})
         if(response && response.email===reqBody.email){//checking if entered username is mathced with email
 
             //getting logged user data
-            const LoggedUserData = await getLoggedUserData(req.cookies.secret); 
+            const LoggedUserData = await getLoggedUserData(req.headers.authorization.split(' ')[1]); 
             // console.log(LoggedUserData)
             
             const contactResonse =  await contactModel.findOne({username : LoggedUserData.username})
@@ -46,6 +47,23 @@ router.post("/addNew",async(req,res)=>{
         }else{//requested new user not found 
             res.json({found:0})
         }
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500)
+    }
+})
+
+router.get("/saved",async(req,res)=>{
+    try { 
+        var reqToken;
+        if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+            reqToken =  req.headers.authorization.split(' ')[1]
+        }
+        const userdata = await getLoggedUserData(reqToken);
+        // console.log(userdata);
+        const response =  await contactModel.findOne({username : userdata.username},{_id:0,username:0,email:0,"contacts._id":0});
+        // console.log(response)
+        res.json(response.contacts)
     } catch (error) {
         console.log(error);
     }

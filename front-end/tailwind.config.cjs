@@ -17,7 +17,7 @@ module.exports = {
       },
       fontSize:{
         mySm : ['0.85rem','1rem'],
-        myMd : ['1rem','1.2rem'],
+        myMd : ['1rem','1.2rem']
       },
       fontWeight:{
         myMedium: 470,

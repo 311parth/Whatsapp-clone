@@ -2,7 +2,6 @@ import React,{useState,useEffect,useRef} from 'react'
 import {useDispatch,useSelector} from "react-redux"
 import { setActiveChatId } from '../store/activeChatIdSlice';
 import { useNavigate ,useLocation} from "react-router-dom";
-import  store from "../store/store.js"
 import getStoreState from  "../helper/getStoreState.js"
 function ChatList(props) {
 
@@ -34,7 +33,7 @@ function ChatList(props) {
                 </div>
                 <div className="chatListCenter w-11/12 space-y-1">
                     <div className="chatListcenterTop text-myMd font-myMedium" >
-                        centerTop {props.ChatListId}    
+                        {props.ChatListUsername} {props.ChatListId}    
                     </div>
                     <div className="chatListcenterBottom text-mySm text-primary-dark-gray ">
                         centerBottom

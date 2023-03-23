@@ -18,7 +18,8 @@ router.post("/",async(req,res)=>{
               });
             res.json({
                 logged : 1,
-                authToken : token
+                authToken : token,
+                username: response.username
             })
         }else {
             res.json({ logged: 0 });

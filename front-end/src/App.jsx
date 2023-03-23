@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import store from "../src/store/store"
 import { Provider } from 'react-redux';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (

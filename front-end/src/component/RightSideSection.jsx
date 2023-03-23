@@ -6,19 +6,36 @@ import { setActiveChatId } from '../store/activeChatIdSlice';
 
 
 function RightSideSection() {
+      const socket = io("http://localhost:8080/");
+      socket.on("connect",()=>{
+        console.log(socket)
+        console.log(socket.id)
+        console.log(socket.connected)
+    })
+
+    useEffect(() => {
+        return () => {  
+            socket.disconnect();
+        }
+    })
     const navigate = useNavigate();
     const dispatch = useDispatch();
     var activeChatId = useSelector((state)=>state.activeChatIdSlice);
+
     // useEffect(() => {
     //     console.log("RightSideSection :  ",activeChatId)
     // }, [])
     var isDefault =0;
-    if(activeChatId.id===0){
+    if(activeChatId.id===-1){
         isDefault=1;
     }
     function navigateBack() {
-        dispatch(setActiveChatId({id:0,username:""}))
+        dispatch(setActiveChatId({id:-1,username:""}))
         navigate(-1)
+    }
+    function submitMsg(){
+        console.log("submitting msg")
+        //TODO: add api for submit
     }
     function getDefaultRightContainer() {
         return(
@@ -73,7 +90,7 @@ function RightSideSection() {
                     </div>
                     <div style={{height:"8%"}} className=" chatInputContainer w-full h-16 bottom-0 flex bg-primary-light-gray justify-center items-center space-x-2 " >
                         <input className="w-10/12 h-10 p-2 text-md rounded-full text-primary-dark-gray" type="text" name="" id="" placeholder="Type a message"/>
-                        <button  className="w-11 h-10 px-2 pt-2  rounded-full text-primary-dark-gray   hover:text-primary-light-gray hover:bg-primary-green  focus:text-primary-light-gray focus:bg-primary-green" ><i className="material-icons  ">send</i></button>
+                        <button  className="w-11 h-10 px-2 pt-2  rounded-full text-primary-dark-gray   hover:text-primary-light-gray hover:bg-primary-green  focus:text-primary-light-gray focus:bg-primary-green" onClick={submitMsg}><i className="material-icons  ">send</i></button>
                     </div>
                 </div>
             </div>

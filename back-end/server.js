@@ -1,5 +1,7 @@
-const express = require("express");
+const express = require('express');
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,6 +22,18 @@ app.use(cors({
     origin: "*"
 }));
 const port = process.env.PORT || 8080;
+
+const io = require("socket.io")(server,{
+    cors:{
+        origin:`${process.env.CLIENT_URL}`
+        // origin: `http://localhost:3000`
+    }
+})
+
+
+
+
+
 const  {loginModel} = require("./model/loginModel")
 
 const testRoute = require("./routes/test");
@@ -32,7 +46,13 @@ app.use("/api/v1/signup",signupRoute)
 app.use("/api/v1/login",loginRoute)
 app.use("/api/v1/contact",contactRoute)
 
-
-app.listen(port,()=>{
+  io.on('connection', (socket) => {
+    console.log('A new client connected');
+  
+    socket.on('disconnect', () => {
+      console.log('A client disconnected');
+    });
+  });
+server.listen(port,()=>{
     console.log("server is running on port ",port)
 })

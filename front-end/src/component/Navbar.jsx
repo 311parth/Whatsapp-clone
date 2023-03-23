@@ -3,12 +3,14 @@ import PopUpBox from './PopUpBox';
 import PopUpNewContact from './PopUpNewContact';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-
+import {pushContact} from "../store/contactsSlice"
+import { useDispatch } from 'react-redux';
 
 function Navbar() {
     
     const email = useRef();
     const username = useRef();
+    const dispatch = useDispatch();
     function navMore() {
         // console.log("navMore click")
         var navMoreOption = document.getElementById("navMoreOption");
@@ -31,10 +33,12 @@ function Navbar() {
                         data: {
                             email: email.current.value,
                             username: username.current.value,
+                        },headers:{
+                            Authorization:`Bearer ${sessionStorage.getItem("secret")}`
                         },
                         withCredentials: true
                     }).then((response) => {
-                        // console.log(response)
+                        console.log(response.data)
                         if(!response || !response.data){
                             toast.error("Something went wrong try Again")
                             return
@@ -48,6 +52,7 @@ function Navbar() {
                         }
                         else{
                             toast.success("User Founded");
+                            dispatch(pushContact({username:response.data.username,email:response.data.email}));
                         }
                     }).catch((error)=>{
                         toast.error("Something went wrong try Again")

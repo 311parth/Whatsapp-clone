@@ -7,16 +7,22 @@ import store from "../store/store"
 import {useDispatch,useSelector} from "react-redux"
 import { useNavigate} from "react-router-dom";
 import axios from 'axios';
+import { setContact } from '../store/contactsSlice';
+import { setActiveChatId } from '../store/activeChatIdSlice';
 
 function HomePage() {
     const activeChatId = useSelector((state)=>state.activeChatIdSlice);
     // console.log("Homepage :  ",activeChatId)
     const navigate = useNavigate();
-    
+    const dispatch = useDispatch();
+    const username = useSelector((state)=>state.usernameSlice);
+    // console.log(username)
     var [innerW,setInnerW] = useState();
     innerW =window.innerWidth;
     useEffect(() => {
     console.log("Homepage :  ",activeChatId)
+    dispatch(setActiveChatId({id:-1,username:""}))
+
         window.addEventListener("resize",()=>{
             setInnerW(window.innerWidth);
         })
@@ -35,15 +41,17 @@ function HomePage() {
             //if error then response.status is 403 or 404 so access denied , and redirected to login page
             navigate("/")
         })
+
         axios({
             method: "GET",
-            url: "/api/v1/test",
+            url: "/api/v1/contact/saved",
             withCredentials: true,
             headers:{
                 Authorization:`Bearer ${sessionStorage.getItem("secret")}`
             }
         }).then((response)=>{
-            console.log(response);
+            // console.log(response);
+            dispatch(setContact({contacts:response.data}));
         })
     }, [])
 

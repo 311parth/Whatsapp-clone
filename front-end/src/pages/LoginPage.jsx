@@ -2,11 +2,15 @@ import React,{useEffect, useState,useRef} from 'react'
 import {Link} from 'react-router-dom'
 import { useLocation ,useNavigate} from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
+import {setUsername} from  "../store/usernameSlice.js"
 import axios from 'axios';
-
+import {useDispatch,useSelector} from "react-redux"
+import { setActiveChatId } from '../store/activeChatIdSlice.js';
 function LoginPage() {
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     useEffect(() => {
         if(location.state &&  location.state.fromsignup ){
             toast.success("Signup successfull Now login")
@@ -28,9 +32,11 @@ function LoginPage() {
             },
             withCredentials: true
         }).then((response) => {
-            console.log(response)
-            if(response && response.data && response.data.authToken){
+            // console.log(response)
+            if(response && response.data && response.data.authToken && response.data.username){
+                // console.log(response.data)
                 sessionStorage.setItem("secret",response.data.authToken)
+                dispatch(setUsername({username:response.data.username}));
             }
             if(!response.data.logged){
                 toast.error("Login Email or password incorrect")
