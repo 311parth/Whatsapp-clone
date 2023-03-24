@@ -38,7 +38,6 @@ function Navbar() {
                         },
                         withCredentials: true
                     }).then((response) => {
-                        console.log(response.data)
                         if(!response || !response.data){
                             toast.error("Something went wrong try Again")
                             return
@@ -52,7 +51,8 @@ function Navbar() {
                         }
                         else{
                             toast.success("User Founded");
-                            dispatch(pushContact({username:response.data.username,email:response.data.email}));
+                            // console.log(response.data)
+                            dispatch(pushContact({username:response.data.username,email:response.data.email,userid:response.data.userid }));
                         }
                     }).catch((error)=>{
                         toast.error("Something went wrong try Again")

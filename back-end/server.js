@@ -46,12 +46,25 @@ app.use("/api/v1/signup",signupRoute)
 app.use("/api/v1/login",loginRoute)
 app.use("/api/v1/contact",contactRoute)
 
-  io.on('connection', (socket) => {
+  io.on('connection', (socket) => { 
     console.log('A new client connected');
-  
-    socket.on('disconnect', () => {
-      console.log('A client disconnected');
+
+    socket.on('new',(args)=>{
+      console.log("new",args)
+      /*
+        from : a 0
+        to : b 1
+        msg : hi 
+        store the msg
+        send msg  to b
+        send ack to a
+      */
     });
+
+    socket.on('disconnect', () => {
+      console.log('A client disconnected',socket.id);
+    });
+
   });
 server.listen(port,()=>{
     console.log("server is running on port ",port)

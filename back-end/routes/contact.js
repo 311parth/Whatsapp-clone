@@ -19,6 +19,8 @@ router.post("/addNew",async(req,res)=>{
             
             const contactResonse =  await contactModel.findOne({username : LoggedUserData.username})
             //checking if user have any contacts ... if no then creating one else pushing new to contact array
+            const reqUserData =  await loginModel.findOne({username : reqBody.username},{uuid:1,_id:0})
+
             if(!contactResonse){
                 const newContact =  await new contactModel({
                     username: LoggedUserData.username,
@@ -26,6 +28,7 @@ router.post("/addNew",async(req,res)=>{
                     contacts : [{
                         username: reqBody.username,
                         email : reqBody.email,
+                        userid:reqUserData.uuid
                     }]
                 }).save();
             }else if(contactResonse.contacts && contactResonse.contacts.find(el=>el.username===reqBody.username)){
@@ -33,16 +36,19 @@ router.post("/addNew",async(req,res)=>{
                     res.json({duplicate : 1})
                     return;
             }else{
+                    console.log(reqUserData)
                     contactResonse.contacts.push({
                         username: reqBody.username,
                         email : reqBody.email,
+                        userid:reqUserData.uuid
                     })
                     contactResonse.save();
             }
             res.json({//if found then sends username and email with found flag
                 found : 1,
                 username:response.username,
-                email : response.email
+                email : response.email,
+                userid:reqUserData.uuid
             })
         }else{//requested new user not found 
             res.json({found:0})

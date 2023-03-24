@@ -34,9 +34,9 @@ function LoginPage() {
         }).then((response) => {
             // console.log(response)
             if(response && response.data && response.data.authToken && response.data.username){
-                // console.log(response.data)
+                console.log(response.data)
                 sessionStorage.setItem("secret",response.data.authToken)
-                dispatch(setUsername({username:response.data.username}));
+                dispatch(setUsername({username:response.data.username,userid:response.data.userid}));
             }
             if(!response.data.logged){
                 toast.error("Login Email or password incorrect")

@@ -19,7 +19,8 @@ router.post("/",async(req,res)=>{
             res.json({
                 logged : 1,
                 authToken : token,
-                username: response.username
+                username: response.username,
+                userid:response.uuid
             })
         }else {
             res.json({ logged: 0 });

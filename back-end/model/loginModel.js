@@ -1,5 +1,11 @@
+const {nanoid} = require("nanoid");
+
 const mongoose = require("mongoose")
 const loginSchema = new mongoose.Schema({
+    uuid: {
+        type: String,
+        default: () => nanoid(7),
+    },
     email : String,
     username: String,
     password : String,

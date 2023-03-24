@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useRef} from 'react'
 import {useDispatch,useSelector} from "react-redux"
 import MessageBox from './MessageBox';
 import { useNavigate ,useLocation} from "react-router-dom";
@@ -6,7 +6,10 @@ import { setActiveChatId } from '../store/activeChatIdSlice';
 
 
 function RightSideSection() {
-      const socket = io("http://localhost:8080/");
+    
+      const socket = io("http://localhost:8080/",{
+          reconnection : true,
+      });
       socket.on("connect",()=>{
         console.log(socket)
         console.log(socket.id)
@@ -33,8 +36,12 @@ function RightSideSection() {
         dispatch(setActiveChatId({id:-1,username:""}))
         navigate(-1)
     }
+    const msgInput = useRef(0);
     function submitMsg(){
-        console.log("submitting msg")
+        console.log("submitting msg",msgInput.current.value)
+        socket.emit("new",msgInput.current.value)
+        document.getElementsByClassName("msgInput")[0].value="";
+        
         //TODO: add api for submit
     }
     function getDefaultRightContainer() {
@@ -89,7 +96,7 @@ function RightSideSection() {
                         <MessageBox msgId={21} isLeft={0}/><br/>
                     </div>
                     <div style={{height:"8%"}} className=" chatInputContainer w-full h-16 bottom-0 flex bg-primary-light-gray justify-center items-center space-x-2 " >
-                        <input className="w-10/12 h-10 p-2 text-md rounded-full text-primary-dark-gray" type="text" name="" id="" placeholder="Type a message"/>
+                        <input className="msgInput w-10/12 h-10 p-2 text-md rounded-full text-primary-dark-gray" type="text" name="" id="" placeholder="Type a message" ref={msgInput}/>
                         <button  className="w-11 h-10 px-2 pt-2  rounded-full text-primary-dark-gray   hover:text-primary-light-gray hover:bg-primary-green  focus:text-primary-light-gray focus:bg-primary-green" onClick={submitMsg}><i className="material-icons  ">send</i></button>
                     </div>
                 </div>

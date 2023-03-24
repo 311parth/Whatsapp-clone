@@ -7,7 +7,8 @@ function ChatList(props) {
 
     
     const dispatch = useDispatch();
-    var activeChatId = useSelector((state)=>state.activeChatIdSlice)
+    var contactsSlice = useSelector((state)=>state.contactsSlice)
+    var activeChatInfo=-1;
     const navigate = useNavigate();
     const [innerW,setInnerW] = useState();
     window.addEventListener("resize",()=>{
@@ -17,7 +18,13 @@ function ChatList(props) {
         setInnerW(window.innerWidth);
     }, [])
     const openChat = ()=>{
-        dispatch(setActiveChatId({id: props.ChatListId,username: props.ChatListUsername }))
+        activeChatInfo = contactsSlice.contacts.find(c => c.username===props.ChatListUsername);
+        console.log(activeChatInfo)
+        if(activeChatInfo && activeChatInfo.userid){
+            dispatch(setActiveChatId({id: activeChatInfo.userid,username: props.ChatListUsername }))
+        }else{
+            //TODO: error message
+        }
         // console.log(activeChatId,props.ChatListId)
         // console.log(activeChatIdRef);
         if(innerW<=700){
