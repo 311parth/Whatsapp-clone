@@ -27,7 +27,7 @@ const io = require("socket.io")(server,{
     cors:{
         origin:`${process.env.CLIENT_URL}`
         // origin: `http://localhost:3000`
-    }
+    },
 })
 
 
@@ -47,10 +47,33 @@ app.use("/api/v1/login",loginRoute)
 app.use("/api/v1/contact",contactRoute)
 
   io.on('connection', (socket) => { 
-    console.log('A new client connected');
-
+    console.log('A new client connected',socket.id);
+    // const socketId = "test123";
+    // socket.join(socketId);
+    // socket.emit('roomACK', socketId);
+    const roomId = socket.handshake.query.roomId;
+    console.log(roomId)
+    if (io.sockets.adapter.rooms.has(roomId)) {
+      socket.join(roomId);
+    }else{
+      io.sockets.adapter.rooms.set(roomId, new Set());
+      socket.join(roomId);
+      socket.emit('roomACK', roomId);
+      console.log("room not empty")
+    }
+    // socket.join(roomId); 
+    socket.emit('roomACK', roomId);
     socket.on('new',(args)=>{
-      console.log("new",args)
+      // console.log(io.sockets.adapter.rooms,typeof(io.sockets.adapter.rooms)); 
+      // console.log("\n")
+      // io.sockets.adapter.rooms.forEach((element,i) => {
+      //   console.log(i,element)
+      // });
+      // console.log("new",args)
+      io.to(args.recRoomId).to(args.senderid).emit('msgRec', args.msgBody);
+      
+
+
       /*
         from : a 0
         to : b 1

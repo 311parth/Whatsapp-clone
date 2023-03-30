@@ -1,7 +1,7 @@
 const express = require("express");
 let router = express.Router();
 const {loginModel} = require("../model/loginModel")
-
+const getLoggedUserData = require("../helper/getLoggedUserData")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const verifyAuthToken = require("../helper/verifyAuthToken")
@@ -33,8 +33,21 @@ router.post("/",async(req,res)=>{
 
 
 
-router.post("/isauthenticated",verifyAuthToken,(req,res)=>{
-   res.json({"isauthenticated" : 1});
+router.post("/isauthenticated",verifyAuthToken,async(req,res)=>{
+//    res.json({"isauthenticated" : 1});
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+        const LoggedUserData = await getLoggedUserData(req.headers.authorization.split(' ')[1]); 
+        res.json({
+            isAuthenticated : 1,
+            username: LoggedUserData.username,
+            userid: LoggedUserData.userid
+        })
+    }else{
+        res.json({
+            isAuthenticated : 0,
+        })
+    }
+
 })
 
 

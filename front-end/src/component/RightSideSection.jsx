@@ -1,30 +1,47 @@
-import React,{useEffect,useRef} from 'react'
+import React,{useEffect,useRef,useState} from 'react'
 import {useDispatch,useSelector} from "react-redux"
 import MessageBox from './MessageBox';
 import { useNavigate ,useLocation} from "react-router-dom";
 import { setActiveChatId } from '../store/activeChatIdSlice';
-
-
+import { io } from "socket.io-client";  
 function RightSideSection() {
-    
-      const socket = io("http://localhost:8080/",{
-          reconnection : true,
-      });
-      socket.on("connect",()=>{
-        console.log(socket)
-        console.log(socket.id)
-        console.log(socket.connected)
-    })
+    const [socket,setSocket] = useState(0);
+    const username = useSelector((state)=>state.usernameSlice);
+    const activeChatIdSlice = useSelector((state)=>state.activeChatIdSlice);
+
 
     useEffect(() => {
-        return () => {  
-            socket.disconnect();
+        if(username && username.userid ){
+            const tempSocket  = io("http://localhost:8080/",{
+                reconnection : true,
+                query : {
+                    roomId : username.userid
+                }
+            });
+            setSocket(tempSocket);//to use socket outside of this useeffect -> socket
+            //and for inside -> tempSocket
+            tempSocket.on("connect",()=>{
+                console.log(tempSocket.id)
+            }) 
+            tempSocket.on("roomACK",()=>{
+                console.log(tempSocket.id)
+                // console.log(tempSocket.rooms,socket)
+            }) 
+            tempSocket.on("msgRec",(args)=>{
+                console.log("msgRec ",args)
+            }) 
+            return () => {  
+                 tempSocket.disconnect();
+            }
         }
-    })
-    const navigate = useNavigate();
+    },[username])
+    const navigate = useNavigate(); 
     const dispatch = useDispatch();
     var activeChatId = useSelector((state)=>state.activeChatIdSlice);
+    var usernameSlice = useSelector((state)=>state.usernameSlice);
+    var socketRoomSlice = useSelector((state)=>state.socketRoomSlice);
 
+    
     // useEffect(() => {
     //     console.log("RightSideSection :  ",activeChatId)
     // }, [])
@@ -38,10 +55,12 @@ function RightSideSection() {
     }
     const msgInput = useRef(0);
     function submitMsg(){
-        console.log("submitting msg",msgInput.current.value)
-        socket.emit("new",msgInput.current.value)
-        document.getElementsByClassName("msgInput")[0].value="";
-        
+            console.log("submitting msg",msgInput.current.value)
+            socket.emit("new",{msgBody: msgInput.current.value,senderid :usernameSlice.userid ,recRoomId : activeChatIdSlice.id})
+            document.getElementsByClassName("msgInput")[0].value="";
+            socket.on('recMsg', (msg) =>{   
+                console.log(`rec message: ${msg}`);
+            });
         //TODO: add api for submit
     }
     function getDefaultRightContainer() {

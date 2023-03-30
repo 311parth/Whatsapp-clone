@@ -69,7 +69,8 @@ router.get("/saved",async(req,res)=>{
         // console.log(userdata);
         const response =  await contactModel.findOne({username : userdata.username},{_id:0,username:0,email:0,"contacts._id":0});
         // console.log(response)
-        res.json(response.contacts)
+        if(!response || !response.contacts)res.json([]);
+        else res.json(response.contacts) 
     } catch (error) {
         console.log(error);
     }

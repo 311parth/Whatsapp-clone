@@ -9,7 +9,8 @@ async function getLoggedUserData(token){
     return {
         username: loggedUserData.username,
         email:loggedUserData.email,
-        fullname : loggedUserData.fullname
+        fullname : loggedUserData.fullname,
+        userid : loggedUserData.uuid
     };
 }
 

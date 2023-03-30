@@ -18,7 +18,7 @@ function ChatList(props) {
         setInnerW(window.innerWidth);
     }, [])
     const openChat = ()=>{
-        activeChatInfo = contactsSlice.contacts.find(c => c.username===props.ChatListUsername);
+        activeChatInfo = contactsSlice.contacts.find(contactObj => contactObj.username===props.ChatListUsername);
         console.log(activeChatInfo)
         if(activeChatInfo && activeChatInfo.userid){
             dispatch(setActiveChatId({id: activeChatInfo.userid,username: props.ChatListUsername }))

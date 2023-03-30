@@ -9,9 +9,14 @@ import { useNavigate} from "react-router-dom";
 import axios from 'axios';
 import { setContact } from '../store/contactsSlice';
 import { setActiveChatId } from '../store/activeChatIdSlice';
+import {setUsername} from  "../store/usernameSlice.js"
+import {setSocketRoom} from  "../store/socketRoomSlice"
 
 function HomePage() {
     const activeChatId = useSelector((state)=>state.activeChatIdSlice);
+    const usernameSlice = useSelector((state)=>state.usernameSlice);
+
+
     // console.log("Homepage :  ",activeChatId)
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -19,7 +24,41 @@ function HomePage() {
     // console.log(username)
     var [innerW,setInnerW] = useState();
     innerW =window.innerWidth;
+        const [socket,setSocket] = useState(0);
+        // useEffect(() => {
+        //     if(username && username.userid ){
+        //         console.log(username)
+        //         console.count("socketCo")
+        //         const tempSocket  = io("http://localhost:8080/",{
+        //             reconnection : true,
+        //             query : {
+        //                 roomId : username.userid
+
+        //             },
+        //         });
+        //         setSocket(tempSocket);//to use socket outside of this useeffect -> socket
+        //         //and for inside -> tempSocket
+        //         tempSocket.on("connect",()=>{
+        //             console.log(tempSocket.id)
+        //             console.log(tempSocket.rooms)
+        //         }) 
+        //         tempSocket.on('roomACK', (roomId) =>{
+        //             console.log(`roomACK message: ${roomId}`);
+        //             dispatch(setSocketRoom({id:roomId}))
+        //         });
+        //         tempSocket.on('recMsg', (msg) =>{
+        //             console.log(`rec message: ${msg}`);
+        //         });
+        //         return () => {
+        //             tempSocket.disconnect();
+        //         }
+        //     }
+        // },[username])
+    
     useEffect(() => {
+        // if(!usernameSlice.username || !usernameSlice.userid){
+        //     navigate("/")
+        // }
     console.log("Homepage :  ",activeChatId)
     dispatch(setActiveChatId({id:-1,username:""}))
 
@@ -37,7 +76,19 @@ function HomePage() {
             }
         }).then((response)=>{
             console.log(response);
+            if(response.data && response.data.isAuthenticated){
+                if(!usernameSlice.userid){
+                    dispatch(setUsername({
+                        username : response.data.username,
+                        userid: response.data.userid
+                    }))
+                    
+                }
+            }else{
+                navigate("/")
+            }
         }).catch((error)=>{
+            // console.log(error)
             //if error then response.status is 403 or 404 so access denied , and redirected to login page
             navigate("/")
         })
@@ -54,6 +105,7 @@ function HomePage() {
             dispatch(setContact({contacts:response.data}));
         })
     }, [])
+
 
     return (
         <>
