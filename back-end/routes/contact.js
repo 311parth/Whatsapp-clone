@@ -29,7 +29,8 @@ router.post("/addNew",async(req,res)=>{
                         username: reqBody.username,
                         email : reqBody.email,
                         userid:reqUserData.uuid
-                    }]
+                    }],
+                    uuid:LoggedUserData.userid,
                 }).save();
             }else if(contactResonse.contacts && contactResonse.contacts.find(el=>el.username===reqBody.username)){
                     //above condition just to check if new contact already exist or not if yes then send duplicate contact flag 

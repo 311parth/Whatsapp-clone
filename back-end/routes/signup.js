@@ -1,6 +1,8 @@
 const express = require("express");
 let router = express.Router();
 const {loginModel} = require("../model/loginModel")
+const {contactModel} = require("../model/contactModel")
+
 
 const bcrypt = require("bcrypt");
 const salt = 10;
@@ -29,7 +31,13 @@ router.post("/",async(req,res)=>{
                 fullname : reqBody.fullname,
                 username : reqBody.username,
                 password : reqBody.password
-            }).save()
+            }).save();
+            const newContact =  await new contactModel({
+                username: reqBody.username,
+                email : reqBody.email,
+                contacts : [],
+                uuid:newUser.uuid,
+            }).save();
             res.json({"signup":1});
         }
     } catch (error) {

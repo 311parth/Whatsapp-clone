@@ -13,7 +13,8 @@ function MessageBox(props) {
                     borderWidth:"0.5px",
                 }}
                 >
-                    <span className="w-fit ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eos!
+                    {/* <span className="w-fit ">{props.msgBody ? props.MsgBody : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eos!"} */}
+                    <span className="w-fit ">{props.msgBody}
                     </span>
                 </div>
             </div>

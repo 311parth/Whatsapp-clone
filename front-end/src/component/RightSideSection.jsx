@@ -56,9 +56,9 @@ function RightSideSection() {
     const msgInput = useRef(0);
     function submitMsg(){
             console.log("submitting msg",msgInput.current.value)
-            socket.emit("new",{msgBody: msgInput.current.value,senderid :usernameSlice.userid ,recRoomId : activeChatIdSlice.id})
+            socket.emit("newMsg",{msgBody: msgInput.current.value,senderid :usernameSlice.userid ,recRoomId : activeChatIdSlice.id})
             document.getElementsByClassName("msgInput")[0].value="";
-            socket.on('recMsg', (msg) =>{   
+            socket.on('recMsg', (msg) =>{
                 console.log(`rec message: ${msg}`);
             });
         //TODO: add api for submit
@@ -92,27 +92,27 @@ function RightSideSection() {
                 </div>
                 <div className="chatContainer h-vh89 pt-2">
                     <div style={{height:"92%"}} className="chatMainContainer overflow-y-scroll scrollbar w-full" >
-                        <MessageBox msgId={1} isLeft={0}/><br/>
-                        <MessageBox msgId={2} isLeft={1}/><br/>
-                        <MessageBox msgId={3} isLeft={0}/><br/>
-                        <MessageBox msgId={4} isLeft={1}/><br/>
-                        <MessageBox msgId={5} isLeft={0}/><br/>
-                        <MessageBox msgId={6} isLeft={1}/><br/>
-                        <MessageBox msgId={7} isLeft={0}/><br/>
-                        <MessageBox msgId={8} isLeft={1}/><br/>
-                        <MessageBox msgId={9} isLeft={0}/><br/>
-                        <MessageBox msgId={10} isLeft={0}/><br/>
-                        <MessageBox msgId={11} isLeft={1}/><br/>
-                        <MessageBox msgId={12} isLeft={0}/><br/>
-                        <MessageBox msgId={13} isLeft={1}/><br/>
-                        <MessageBox msgId={14} isLeft={0}/><br/>
-                        <MessageBox msgId={15} isLeft={1}/><br/>
-                        <MessageBox msgId={16} isLeft={0}/><br/>
-                        <MessageBox msgId={17} isLeft={0}/><br/>
-                        <MessageBox msgId={18} isLeft={0}/><br/>
-                        <MessageBox msgId={19} isLeft={1}/><br/>
-                        <MessageBox msgId={20} isLeft={1}/><br/>
-                        <MessageBox msgId={21} isLeft={0}/><br/>
+                        <MessageBox msgId={1} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={2} isLeft={1} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={3} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={4} isLeft={1} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={5} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={6} isLeft={1} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={7} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={8} isLeft={1} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={9} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={10} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={11} isLeft={1} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={12} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={13} isLeft={1} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={14} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={15} isLeft={1} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={16} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={17} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={18} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={19} isLeft={1} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={20} isLeft={1} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={21} isLeft={0} msgBody={"abc"}/><br/>
                     </div>
                     <div style={{height:"8%"}} className=" chatInputContainer w-full h-16 bottom-0 flex bg-primary-light-gray justify-center items-center space-x-2 " >
                         <input className="msgInput w-10/12 h-10 p-2 text-md rounded-full text-primary-dark-gray" type="text" name="" id="" placeholder="Type a message" ref={msgInput}/>

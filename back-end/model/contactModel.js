@@ -8,7 +8,8 @@ const contactSchema = new mongoose.Schema({
             email : String,
             userid: String
         }
-    ]
+    ],
+    uuid:String,
 })
 
 var contactModel = mongoose.model("contactModels",contactSchema)
