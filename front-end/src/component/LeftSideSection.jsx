@@ -22,7 +22,7 @@ function LeftSideSection() {
                     <div className="chatListContainer mt-2 w-full border-t-2 border-gray-3=200 ">
                         {
                             contacts.map((ele,index)=>{
-                                return <ChatList key={ele.username} ChatListUsername={ele.username} ChatListId={ index } />
+                                return <ChatList key={ele.username} ChatListUsername={ele.username} ChatListId={ index } saved={ele.saved} />
                             })
                         }
                     </div>

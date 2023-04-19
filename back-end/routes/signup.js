@@ -7,7 +7,7 @@ const {contactModel} = require("../model/contactModel")
 const bcrypt = require("bcrypt");
 const salt = 10;
 router.post("/",async(req,res)=>{
-    console.log(req.body)
+    // console.log(req.body)
     const hashedPw = await bcrypt.hash(req.body.password, salt);
     const reqBody = {
         email : req.body.email,

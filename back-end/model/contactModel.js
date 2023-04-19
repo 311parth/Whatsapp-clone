@@ -6,7 +6,8 @@ const contactSchema = new mongoose.Schema({
         {
             username: String,
             email : String,
-            userid: String
+            userid: String,
+            saved : Boolean
         }
     ],
     uuid:String,

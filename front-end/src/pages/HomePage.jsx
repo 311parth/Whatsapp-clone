@@ -25,36 +25,6 @@ function HomePage() {
     var [innerW,setInnerW] = useState();
     innerW =window.innerWidth;
         const [socket,setSocket] = useState(0);
-        // useEffect(() => {
-        //     if(username && username.userid ){
-        //         console.log(username)
-        //         console.count("socketCo")
-        //         const tempSocket  = io("http://localhost:8080/",{
-        //             reconnection : true,
-        //             query : {
-        //                 roomId : username.userid
-
-        //             },
-        //         });
-        //         setSocket(tempSocket);//to use socket outside of this useeffect -> socket
-        //         //and for inside -> tempSocket
-        //         tempSocket.on("connect",()=>{
-        //             console.log(tempSocket.id)
-        //             console.log(tempSocket.rooms)
-        //         }) 
-        //         tempSocket.on('roomACK', (roomId) =>{
-        //             console.log(`roomACK message: ${roomId}`);
-        //             dispatch(setSocketRoom({id:roomId}))
-        //         });
-        //         tempSocket.on('recMsg', (msg) =>{
-        //             console.log(`rec message: ${msg}`);
-        //         });
-        //         return () => {
-        //             tempSocket.disconnect();
-        //         }
-        //     }
-        // },[username])
-    
     useEffect(() => {
         // if(!usernameSlice.username || !usernameSlice.userid){
         //     navigate("/")

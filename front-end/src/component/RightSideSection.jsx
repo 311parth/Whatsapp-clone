@@ -61,7 +61,7 @@ function RightSideSection() {
             socket.on('recMsg', (msg) =>{
                 console.log(`rec message: ${msg}`);
             });
-        //TODO: add api for submit
+            
     }
     function getDefaultRightContainer() {
         return(

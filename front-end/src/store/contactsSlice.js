@@ -10,7 +10,15 @@ export const contactsSlice = createSlice({
             state.contacts =(action.payload.contacts);
         },
         pushContact(state,action){
+            // state.contacts.push(action.payload);
+            const contactIndex = state.contacts.findIndex((contact) => contact.id === action.payload.id);
+            if (contactIndex === -1) {
+            // contact not found, add it
             state.contacts.push(action.payload);
+            } else {
+            // contact found, update it
+            state.contacts[contactIndex] = action.payload;
+            }
         }
     }
 })

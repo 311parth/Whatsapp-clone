@@ -8,48 +8,57 @@ router.post("/addNew",async(req,res)=>{
         username: req.body.username,
         email : req.body.email
     }
-    console.log(req.headers)
+    // console.log(req.headers)
     try {
-        const response =  await loginModel.findOne({username : reqBody.username})
+        const response =  await loginModel.findOne({username : reqBody.username});
         if(response && response.email===reqBody.email){//checking if entered username is mathced with email
 
             //getting logged user data
             const LoggedUserData = await getLoggedUserData(req.headers.authorization.split(' ')[1]); 
             // console.log(LoggedUserData)
             
-            const contactResonse =  await contactModel.findOne({username : LoggedUserData.username})
+            const contactResponse =  await contactModel.findOne({username : LoggedUserData.username})
             //checking if user have any contacts ... if no then creating one else pushing new to contact array
-            const reqUserData =  await loginModel.findOne({username : reqBody.username},{uuid:1,_id:0})
-
-            if(!contactResonse){
+            if(!contactResponse){
                 const newContact =  await new contactModel({
                     username: LoggedUserData.username,
                     email : LoggedUserData.email,
                     contacts : [{
                         username: reqBody.username,
                         email : reqBody.email,
-                        userid:reqUserData.uuid
+                        userid:response.uuid,
+                        saved : 1,
                     }],
                     uuid:LoggedUserData.userid,
                 }).save();
-            }else if(contactResonse.contacts && contactResonse.contacts.find(el=>el.username===reqBody.username)){
-                    //above condition just to check if new contact already exist or not if yes then send duplicate contact flag 
-                    res.json({duplicate : 1})
-                    return;
             }else{
-                    console.log(reqUserData)
-                    contactResonse.contacts.push({
-                        username: reqBody.username,
-                        email : reqBody.email,
-                        userid:reqUserData.uuid
-                    })
-                    contactResonse.save();
+                    var contactResOfFind = contactResponse.contacts.find(el=>el.username===reqBody.username);
+                    if(!contactResOfFind){
+                        //that means contact is not exist in anyform 
+                        contactResponse.contacts.push({
+                            username: reqBody.username,
+                            email : reqBody.email,
+                            userid:response.uuid,
+                            saved: 1
+                        })
+                        contactResponse.save();
+                    }else{
+                        if(!contactResOfFind.saved){
+                            //that means contact is there but flag saved is 0 so its unsaved..
+                            contactResponse.contacts.find(el=>el.username===reqBody.username).saved=1;
+                            contactResponse.save();
+                        }else{
+                            //contact is saved already 
+                            res.json({duplicate : 1})
+                            return;
+                        }
+                    }
             }
             res.json({//if found then sends username and email with found flag
                 found : 1,
                 username:response.username,
                 email : response.email,
-                userid:reqUserData.uuid
+                userid:response.uuid
             })
         }else{//requested new user not found 
             res.json({found:0})

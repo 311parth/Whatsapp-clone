@@ -52,7 +52,7 @@ function Navbar() {
                         else{
                             toast.success("User Founded");
                             // console.log(response.data)
-                            dispatch(pushContact({username:response.data.username,email:response.data.email,userid:response.data.userid }));
+                            dispatch(pushContact({username:response.data.username,email:response.data.email,userid:response.data.userid,saved:1 }));
                         }
                     }).catch((error)=>{
                         toast.error("Something went wrong try Again")
@@ -73,7 +73,7 @@ function Navbar() {
                 </div>
                 <ToastContainer
                 position="top-center"
-                autoClose={5000}
+                autoClose={3000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick

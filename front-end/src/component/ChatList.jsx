@@ -40,7 +40,7 @@ function ChatList(props) {
                 </div>
                 <div className="chatListCenter w-11/12 space-y-1">
                     <div className="chatListcenterTop text-myMd font-myMedium" >
-                        {props.ChatListUsername} {props.ChatListId}    
+                        {props.ChatListUsername} {props.ChatListId}  {!props.saved ? "[unsaved]": "" }
                     </div>
                     <div className="chatListcenterBottom text-mySm text-primary-dark-gray ">
                         centerBottom

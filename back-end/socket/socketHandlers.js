@@ -1,4 +1,4 @@
-const  {loginModel} = require("../model/contactModel")
+const  {loginModel} = require("../model/loginModel")
 const  {contactModel} = require("../model/contactModel")
 
 
@@ -6,10 +6,6 @@ const  {contactModel} = require("../model/contactModel")
 const socketHandlers = (io) => {
     
   io.on('connection',async (socket) => { 
-    // console.log('A new client connected',socket.id);
-    // const socketId = "test123";
-    // socket.join(socketId);
-    // socket.emit('roomACK', socketId);
     const roomId = socket.handshake.query.roomId;
     // console.log(roomId)
     if (io.sockets.adapter.rooms.has(roomId)) {
@@ -24,12 +20,7 @@ const socketHandlers = (io) => {
     socket.emit('roomACK', roomId);
     try {
       socket.on('newMsg',async(args)=>{
-        // console.log(io.sockets.adapter.rooms,typeof(io.sockets.adapter.rooms)); 
-        // console.log("\n")
-        // io.sockets.adapter.rooms.forEach((element,i) => {
-        //   console.log(i,element)
-        // });
-        // console.log("new",args)
+        console.log("new",args)
         var senderUsername="";
         var isSenderIsSavedInRecSide =false;
         //checking if the user is alredy in cantact of sender 
@@ -47,11 +38,20 @@ const socketHandlers = (io) => {
             if(senderUserResponse && senderUserResponse.username){
               senderUsername=senderUserResponse.username;
             }
+            //addding sender to contact list of recv with saved flag as 0
+            contactResponse.contacts.push({
+              username: senderUserResponse.username,
+              email : senderUserResponse.email,
+              userid:senderUserResponse.uuid,
+              saved: 0
+            })
+            await contactResponse.save();
             isSenderIsSavedInRecSide=false;
           };
 
+        //sedning msg to room 
         io.to(args.recRoomId).to(args.senderid).emit('msgRec', {body : args.msgBody,sender : senderUsername,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide});
-
+          
 
         /*
           from : a 0

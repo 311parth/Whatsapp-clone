@@ -1,7 +1,7 @@
 import React from 'react'
 
 function PopUpNewContact(props) {
-    function closeNewContactPopUp(params) {
+    function closeNewContactPopUp() {
         var PopUpNewContactId = document.getElementById("PopUpNewContact");
         PopUpNewContactId && PopUpNewContactId.classList &&  PopUpNewContactId.classList.add("hidden")
     }
