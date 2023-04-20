@@ -11,6 +11,7 @@ import { setContact } from '../store/contactsSlice';
 import { setActiveChatId } from '../store/activeChatIdSlice';
 import {setUsername} from  "../store/usernameSlice.js"
 import {setSocketRoom} from  "../store/socketRoomSlice"
+import {pushContact} from "../store/contactsSlice"
 
 function HomePage() {
     const activeChatId = useSelector((state)=>state.activeChatIdSlice);
@@ -25,6 +26,38 @@ function HomePage() {
     var [innerW,setInnerW] = useState();
     innerW =window.innerWidth;
         const [socket,setSocket] = useState(0);
+        const activeChatIdSlice = useSelector((state)=>state.activeChatIdSlice);
+        useEffect(() => {
+            if(username && username.userid ){
+                const tempSocket  = io("http://localhost:8080/",{
+                    reconnection : true,
+                    query : {
+                        roomId : username.userid
+                    }
+                });
+                setSocket(tempSocket);//to use socket outside of this useeffect -> socket
+                //and for inside -> tempSocket
+                tempSocket.on("connect",()=>{
+                    console.log(tempSocket.id)
+                }) 
+                tempSocket.on("roomACK",()=>{
+                    console.log(tempSocket.id)
+                    // console.log(tempSocket.rooms,socket)
+                }) 
+                console.log("..")
+                tempSocket.on("msgRec",(args)=>{
+                    console.log("msgRec ",args)
+                    if(!args.isSenderIsSavedInRecSide){
+                        console.log("hh")
+                        if(args.sender && args.email  && args.userid && args.userid!==username.userid)//if sender and rec is not same
+                            dispatch(pushContact({username:args.sender,email:args.email,userid:args.userid,saved:0 }));
+                    }
+                }) 
+                return () => {  
+                     tempSocket.disconnect();
+                }
+            }
+        },[username])
     useEffect(() => {
         // if(!usernameSlice.username || !usernameSlice.userid){
         //     navigate("/")
@@ -76,7 +109,7 @@ function HomePage() {
         })
     }, [])
 
-
+    if(!socket)return(<></>);
     return (
         <>
         <Provider store={store}>
@@ -89,9 +122,8 @@ function HomePage() {
                         <Navbar/>
                         <LeftSideSection/>
                 </div> }
-
                 {innerW>700 ? <div className="w-2/3 ">
-                    <RightSideSection/>
+                    <RightSideSection />
                 </div> : "" }
             </section>
         </Provider>

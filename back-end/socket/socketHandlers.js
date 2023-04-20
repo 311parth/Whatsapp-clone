@@ -20,12 +20,12 @@ const socketHandlers = (io) => {
     socket.emit('roomACK', roomId);
     try {
       socket.on('newMsg',async(args)=>{
-        console.log("new",args)
+        // console.log("new",args)
         var senderUsername="";
         var isSenderIsSavedInRecSide =false;
         //checking if the user is alredy in cantact of sender 
         const contactResponse = await contactModel.findOne({uuid:args.recRoomId});
-
+        var senderUserResponse;
           //checking if the rec have saved contact of sender
           var contactMatched= contactResponse.contacts.find(ele=>ele.userid===args.senderid);
           if(contactMatched){
@@ -34,7 +34,7 @@ const socketHandlers = (io) => {
           }else{
             //sender username is unknown to rec so..
             //fetching username of sender with senderid
-            const senderUserResponse = await loginModel.findOne({uuid:args.senderid});
+            senderUserResponse = await loginModel.findOne({uuid:args.senderid});
             if(senderUserResponse && senderUserResponse.username){
               senderUsername=senderUserResponse.username;
             }
@@ -50,7 +50,12 @@ const socketHandlers = (io) => {
           };
 
         //sedning msg to room 
-        io.to(args.recRoomId).to(args.senderid).emit('msgRec', {body : args.msgBody,sender : senderUsername,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide});
+        if(!isSenderIsSavedInRecSide){
+          io.to(args.recRoomId).to(args.senderid).emit('msgRec', {body : args.msgBody,sender : senderUsername,email:senderUserResponse.email,userid:senderUserResponse.uuid,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide});
+        }else{
+          io.to(args.recRoomId).to(args.senderid).emit('msgRec', {body : args.msgBody,sender : senderUsername,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide});
+          
+        }
           
 
         /*

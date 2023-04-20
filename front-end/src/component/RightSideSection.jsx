@@ -1,10 +1,12 @@
 import React,{useEffect,useRef,useState} from 'react'
 import {useDispatch,useSelector} from "react-redux"
 import MessageBox from './MessageBox';
-import { useNavigate ,useLocation} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setActiveChatId } from '../store/activeChatIdSlice';
 import { io } from "socket.io-client";  
-function RightSideSection() {
+import {pushContact} from "../store/contactsSlice"
+
+function RightSideSection(props) {
     const [socket,setSocket] = useState(0);
     const username = useSelector((state)=>state.usernameSlice);
     const activeChatIdSlice = useSelector((state)=>state.activeChatIdSlice);
@@ -27,14 +29,24 @@ function RightSideSection() {
                 console.log(tempSocket.id)
                 // console.log(tempSocket.rooms,socket)
             }) 
+            // console.log("..")
             tempSocket.on("msgRec",(args)=>{
                 console.log("msgRec ",args)
+                if(!args.isSenderIsSavedInRecSide){
+                    console.log("hh")
+                    if(args.sender && args.email  && args.userid && args.userid!==username.userid)//if sender and rec is not same
+                        dispatch(pushContact({username:args.sender,email:args.email,userid:args.userid,saved:0 }));
+                }
             }) 
-            return () => {  
+            return () => {
                  tempSocket.disconnect();
             }
         }
     },[username])
+
+    //temp
+    // const socket = props.socket;
+    // console.log(props)
     const navigate = useNavigate(); 
     const dispatch = useDispatch();
     var activeChatId = useSelector((state)=>state.activeChatIdSlice);
@@ -61,7 +73,6 @@ function RightSideSection() {
             socket.on('recMsg', (msg) =>{
                 console.log(`rec message: ${msg}`);
             });
-            
     }
     function getDefaultRightContainer() {
         return(

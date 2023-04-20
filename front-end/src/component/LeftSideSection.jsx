@@ -1,13 +1,18 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import ChatList from './ChatList';
 import {useDispatch,useSelector} from "react-redux"
 
 // import {Provider} from "react-redux"
 // import store from '../store/store'
 function LeftSideSection() {   
-    const dispatch = useDispatch(); 
-    const contactsSlice = useSelector((state)=>state.contactsSlice)
-    const contacts = contactsSlice.contacts;
+    const contactsSlice = useSelector((state)=>state.contactsSlice.contacts)
+    // const contacts = contactsSlice.contacts;
+    const contacts = contactsSlice;
+    
+    const [dummyState, setDummyState] = useState(false); // A dummy state used to trigger a re-render
+    useEffect(() => {
+        setDummyState(prevState => !prevState);
+      }, [contacts]);
     // console.log(contacts)
     return (
         <>

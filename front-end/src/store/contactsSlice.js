@@ -20,6 +20,7 @@ export const contactsSlice = createSlice({
             state.contacts[contactIndex] = action.payload;
             }
         }
+        
     }
 })
 
