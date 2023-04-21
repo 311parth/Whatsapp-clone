@@ -5,12 +5,24 @@ import { useNavigate } from "react-router-dom";
 import { setActiveChatId } from '../store/activeChatIdSlice';
 import { io } from "socket.io-client";  
 import {pushContact} from "../store/contactsSlice"
+import {newMsgRec} from "../helper/socketHanlders.js";
 
 function RightSideSection(props) {
     const [socket,setSocket] = useState(0);
     const username = useSelector((state)=>state.usernameSlice);
     const activeChatIdSlice = useSelector((state)=>state.activeChatIdSlice);
-
+    const [messages, setMessages] = useState([]);
+    function onMsgRec(args){
+        console.log(6,args);
+        const newMessage = {
+            msgId: messages.length + 1,
+            isLeft:1,
+            msgBody: args.body,
+          };
+          console.log(newMessage.msgId)
+          setMessages((prevMsg)=> [...prevMsg, newMessage]);
+    };
+    
 
     useEffect(() => {
         if(username && username.userid ){
@@ -29,17 +41,9 @@ function RightSideSection(props) {
                 console.log(tempSocket.id)
                 // console.log(tempSocket.rooms,socket)
             }) 
-            // console.log("..")
-            tempSocket.on("msgRec",(args)=>{
-                console.log("msgRec ",args)
-                if(!args.isSenderIsSavedInRecSide){
-                    console.log("hh")
-                    if(args.sender && args.email  && args.userid && args.userid!==username.userid)//if sender and rec is not same
-                        dispatch(pushContact({username:args.sender,email:args.email,userid:args.userid,saved:0 }));
-                }
-            }) 
+            newMsgRec(tempSocket,dispatch,onMsgRec,username);
             return () => {
-                 tempSocket.disconnect();
+                tempSocket.disconnect();
             }
         }
     },[username])
@@ -66,14 +70,38 @@ function RightSideSection(props) {
         navigate(-1)
     }
     const msgInput = useRef(0);
+    var msgInputBody;
     function submitMsg(){
-            console.log("submitting msg",msgInput.current.value)
-            socket.emit("newMsg",{msgBody: msgInput.current.value,senderid :usernameSlice.userid ,recRoomId : activeChatIdSlice.id})
-            document.getElementsByClassName("msgInput")[0].value="";
-            socket.on('recMsg', (msg) =>{
-                console.log(`rec message: ${msg}`);
+            msgInputBody =msgInput.current.value; 
+            console.log("submitting msg",msgInputBody)
+            socket.emit("newMsg",{msgBody: msgInputBody,senderid :usernameSlice.userid ,recRoomId : activeChatIdSlice.id})
+            socket.on('msgSendACK', (args) =>{
+                console.log("1")
+                if(args.ACK===1){
+                    const newMessage = {
+                        msgId: messages.length + 1,
+                        isLeft:0,
+                        msgBody:  msgInputBody,
+                      };
+                    setMessages((prevMsg)=> [...prevMsg, newMessage]);
+                }
             });
+ 
+            document.getElementsByClassName("msgInput")[0].value="";
+           
     }
+    socket && socket.on('msgSendACK', (args) =>{
+        console.log("1")
+        if(args.ACK===1){
+            const newMessage = {
+                msgId: messages.length + 1,
+                isLeft:0,
+                msgBody:  msgInputBody,
+              };
+            setMessages((prevMsg)=> [...prevMsg, newMessage]);
+        }
+    });
+    socket && socket.off('msgSendACK') //removing event listener if ack is recieved (its called more than one time beacuse of the use effect so to stop that)
     function getDefaultRightContainer() {
         return(
             <div className="rightSideDefaultContainer  flex flex-col h-full justify-center items-center  text-primary-dark-gray">
@@ -103,7 +131,7 @@ function RightSideSection(props) {
                 </div>
                 <div className="chatContainer h-vh89 pt-2">
                     <div style={{height:"92%"}} className="chatMainContainer overflow-y-scroll scrollbar w-full" >
-                        <MessageBox msgId={1} isLeft={0} msgBody={"abc"}/><br/>
+                        {/* <MessageBox msgId={1} isLeft={0} msgBody={"abc"}/><br/>
                         <MessageBox msgId={2} isLeft={1} msgBody={"abc"}/><br/>
                         <MessageBox msgId={3} isLeft={0} msgBody={"abc"}/><br/>
                         <MessageBox msgId={4} isLeft={1} msgBody={"abc"}/><br/>
@@ -123,7 +151,15 @@ function RightSideSection(props) {
                         <MessageBox msgId={18} isLeft={0} msgBody={"abc"}/><br/>
                         <MessageBox msgId={19} isLeft={1} msgBody={"abc"}/><br/>
                         <MessageBox msgId={20} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={21} isLeft={0} msgBody={"abc"}/><br/>
+                        <MessageBox msgId={21} isLeft={0} msgBody={"abc"}/><br/> */}
+                         {messages.map((message,ind) => (
+                            <MessageBox
+                            key={ind}
+                            msgId={message.msgId}
+                            isLeft={message.isLeft}
+                            msgBody={message.msgBody}
+                            />
+                        ))}
                     </div>
                     <div style={{height:"8%"}} className=" chatInputContainer w-full h-16 bottom-0 flex bg-primary-light-gray justify-center items-center space-x-2 " >
                         <input className="msgInput w-10/12 h-10 p-2 text-md rounded-full text-primary-dark-gray" type="text" name="" id="" placeholder="Type a message" ref={msgInput}/>

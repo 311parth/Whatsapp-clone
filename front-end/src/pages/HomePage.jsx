@@ -12,6 +12,8 @@ import { setActiveChatId } from '../store/activeChatIdSlice';
 import {setUsername} from  "../store/usernameSlice.js"
 import {setSocketRoom} from  "../store/socketRoomSlice"
 import {pushContact} from "../store/contactsSlice"
+import {newMsgRec} from "../helper/socketHanlders"
+import {setUnreadNewMsg} from "../store/unreadNewMsg"
 
 function HomePage() {
     const activeChatId = useSelector((state)=>state.activeChatIdSlice);
@@ -25,37 +27,40 @@ function HomePage() {
     // console.log(username)
     var [innerW,setInnerW] = useState();
     innerW =window.innerWidth;
+    function saveUnreadNewMsg(args){
+        console.log(6,args);
+        const newMessage = {
+            // msgId: messages.length + 1,
+            sender : args.sender,
+            isLeft:1,
+            msg: args.body,
+          };
+        //   setMessages((prevMsg)=> [...prevMsg, newMessage]);
+        dispatch(setUnreadNewMsg(newMessage));
+    };
         const [socket,setSocket] = useState(0);
         const activeChatIdSlice = useSelector((state)=>state.activeChatIdSlice);
-        useEffect(() => {
-            if(username && username.userid ){
-                const tempSocket  = io("http://localhost:8080/",{
-                    reconnection : true,
-                    query : {
-                        roomId : username.userid
+        useEffect( () => {
+            if(username && username.userid && innerW<=700){//if small screen then only start new sokcet (because its in new url)
+                    const tempSocket  = io("http://localhost:8080/",{
+                        reconnection : true,
+                        query : {
+                            roomId : username.userid
+                        }
+                    });
+                    setSocket(tempSocket);//to use socket outside of this useeffect -> socket
+                    //and for inside -> tempSocket
+                    tempSocket.on("connect",()=>{
+                        console.log(tempSocket.id)
+                    }) 
+                    tempSocket.on("roomACK",()=>{
+                        console.log(tempSocket.id)
+                        // console.log(tempSocket.rooms,socket)
+                    }) 
+                    newMsgRec(tempSocket,dispatch,saveUnreadNewMsg,username);
+                    return () => {  
+                         tempSocket.disconnect();
                     }
-                });
-                setSocket(tempSocket);//to use socket outside of this useeffect -> socket
-                //and for inside -> tempSocket
-                tempSocket.on("connect",()=>{
-                    console.log(tempSocket.id)
-                }) 
-                tempSocket.on("roomACK",()=>{
-                    console.log(tempSocket.id)
-                    // console.log(tempSocket.rooms,socket)
-                }) 
-                console.log("..")
-                tempSocket.on("msgRec",(args)=>{
-                    console.log("msgRec ",args)
-                    if(!args.isSenderIsSavedInRecSide){
-                        console.log("hh")
-                        if(args.sender && args.email  && args.userid && args.userid!==username.userid)//if sender and rec is not same
-                            dispatch(pushContact({username:args.sender,email:args.email,userid:args.userid,saved:0 }));
-                    }
-                }) 
-                return () => {  
-                     tempSocket.disconnect();
-                }
             }
         },[username])
     useEffect(() => {
@@ -109,7 +114,7 @@ function HomePage() {
         })
     }, [])
 
-    if(!socket)return(<></>);
+    if(!socket && innerW<=700)return(<></>);//if innerw is small then socket init is must
     return (
         <>
         <Provider store={store}>
