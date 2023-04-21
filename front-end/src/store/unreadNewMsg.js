@@ -5,7 +5,7 @@ export const unreadNewMsg = createSlice({
   initialState: [],
   reducers: {
     setUnreadNewMsg(state, action) {
-      const { sender, isLeft, msg } = action.payload;
+      const { sender, isLeft, msg ,recvId } = action.payload;
       const existingObj = state.find(obj => obj.sender === sender);
 
       if (existingObj) {
@@ -15,6 +15,7 @@ export const unreadNewMsg = createSlice({
           sender,
           isLeft: 1,
           msg: [msg],
+          recvId,
         };
         state.push(newObj);
       }

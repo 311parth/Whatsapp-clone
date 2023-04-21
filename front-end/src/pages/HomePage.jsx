@@ -34,8 +34,10 @@ function HomePage() {
             sender : args.sender,
             isLeft:1,
             msg: args.body,
+            sender : args.sender,
+            recvId : args.recvId
           };
-        //   setMessages((prevMsg)=> [...prevMsg, newMessage]);
+        //setMessages((prevMsg)=> [...prevMsg, newMessage]);
         dispatch(setUnreadNewMsg(newMessage));
     };
         const [socket,setSocket] = useState(0);

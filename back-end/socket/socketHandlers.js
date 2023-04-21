@@ -52,9 +52,9 @@ const socketHandlers = (io) => {
         //sedning msg to room 
         if(!isSenderIsSavedInRecSide){
           // io.to(args.recRoomId).to(args.senderid).emit('msgRec', {body : args.msgBody,sender : senderUsername,email:senderUserResponse.email,userid:senderUserResponse.uuid,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide});
-          io.to(args.recRoomId).emit('msgRec', {body : args.msgBody,sender : senderUsername,email:senderUserResponse.email,userid:senderUserResponse.uuid,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide});
+          io.to(args.recRoomId).emit('msgRec', {body : args.msgBody,sender : senderUsername,email:senderUserResponse.email,userid:senderUserResponse.uuid,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide,recvId : args.recRoomId});
         }else{
-          io.to(args.recRoomId).emit('msgRec', {body : args.msgBody,sender : senderUsername,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide});
+          io.to(args.recRoomId).emit('msgRec', {body : args.msgBody,sender : senderUsername,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide,recvId : args.recRoomId});
         }
         io.to(args.senderid).emit('msgSendACK', {ACK:1});
           

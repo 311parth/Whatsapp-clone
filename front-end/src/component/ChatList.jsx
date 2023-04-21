@@ -19,7 +19,7 @@ function ChatList(props) {
     }, [])
     const openChat = ()=>{
         activeChatInfo = contactsSlice.contacts.find(contactObj => contactObj.username===props.ChatListUsername);
-        console.log(activeChatInfo)
+        // console.log(activeChatInfo)
         if(activeChatInfo && activeChatInfo.userid){
             dispatch(setActiveChatId({id: activeChatInfo.userid,username: props.ChatListUsername }))
         }else{

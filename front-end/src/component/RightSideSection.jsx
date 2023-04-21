@@ -12,14 +12,18 @@ function RightSideSection(props) {
     const username = useSelector((state)=>state.usernameSlice);
     const activeChatIdSlice = useSelector((state)=>state.activeChatIdSlice);
     const [messages, setMessages] = useState([]);
+    var unreadNewMsg = useSelector((state)=>state.unreadNewMsg);
+
     function onMsgRec(args){
         console.log(6,args);
         const newMessage = {
             msgId: messages.length + 1,
             isLeft:1,
             msgBody: args.body,
+            sender : args.sender,
+            recvId : args.recvId
           };
-          console.log(newMessage.msgId)
+          console.log(7,newMessage)
           setMessages((prevMsg)=> [...prevMsg, newMessage]);
     };
     
@@ -46,6 +50,7 @@ function RightSideSection(props) {
                 tempSocket.disconnect();
             }
         }
+
     },[username])
 
     //temp
@@ -82,6 +87,8 @@ function RightSideSection(props) {
                         msgId: messages.length + 1,
                         isLeft:0,
                         msgBody:  msgInputBody,
+                        sender : username.username,
+                        recvId : activeChatIdSlice.id
                       };
                     setMessages((prevMsg)=> [...prevMsg, newMessage]);
                 }
@@ -97,6 +104,8 @@ function RightSideSection(props) {
                 msgId: messages.length + 1,
                 isLeft:0,
                 msgBody:  msgInputBody,
+                sender:username.username,
+                recvId : activeChatIdSlice.id
               };
             setMessages((prevMsg)=> [...prevMsg, newMessage]);
         }
@@ -131,35 +140,17 @@ function RightSideSection(props) {
                 </div>
                 <div className="chatContainer h-vh89 pt-2">
                     <div style={{height:"92%"}} className="chatMainContainer overflow-y-scroll scrollbar w-full" >
-                        {/* <MessageBox msgId={1} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={2} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={3} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={4} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={5} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={6} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={7} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={8} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={9} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={10} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={11} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={12} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={13} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={14} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={15} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={16} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={17} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={18} isLeft={0} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={19} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={20} isLeft={1} msgBody={"abc"}/><br/>
-                        <MessageBox msgId={21} isLeft={0} msgBody={"abc"}/><br/> */}
-                         {messages.map((message,ind) => (
+                        {/* {console.log(activeChatIdSlice.username,messages)} */}
+                         {messages.map((message,ind) =>
+                         //checking if rec is user (if so then checking active chat is of sender )  OR checking if sender is curr user (if so then checking rec window is currently active)
+                         ((message.recvId===username.userid && message.sender===activeChatIdSlice.username )||(message.sender===username.username && message.recvId===activeChatIdSlice.id) )? 
                             <MessageBox
                             key={ind}
                             msgId={message.msgId}
                             isLeft={message.isLeft}
-                            msgBody={message.msgBody}
-                            />
-                        ))}
+                            msgBody={message.msgBody} 
+                            /> : ""
+                        )}
                     </div>
                     <div style={{height:"8%"}} className=" chatInputContainer w-full h-16 bottom-0 flex bg-primary-light-gray justify-center items-center space-x-2 " >
                         <input className="msgInput w-10/12 h-10 p-2 text-md rounded-full text-primary-dark-gray" type="text" name="" id="" placeholder="Type a message" ref={msgInput}/>
