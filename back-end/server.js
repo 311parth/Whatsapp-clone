@@ -24,6 +24,7 @@ app.use(cors({
 const port = process.env.PORT || 8080;
 const io = require("socket.io")(server,{
   cors:{
+    // origin:"*"
     origin:`${process.env.CLIENT_URL}`
     // origin: `http://localhost:3000`
   },

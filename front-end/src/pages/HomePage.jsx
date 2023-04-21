@@ -30,7 +30,6 @@ function HomePage() {
     function saveUnreadNewMsg(args){
         console.log(6,args);
         const newMessage = {
-            // msgId: messages.length + 1,
             sender : args.sender,
             isLeft:1,
             msg: args.body,
@@ -92,7 +91,6 @@ function HomePage() {
                         username : response.data.username,
                         userid: response.data.userid
                     }))
-                    
                 }
             }else{
                 navigate("/")

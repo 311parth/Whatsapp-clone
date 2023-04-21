@@ -26,10 +26,27 @@ function RightSideSection(props) {
           console.log(7,newMessage)
           setMessages((prevMsg)=> [...prevMsg, newMessage]);
     };
-    
 
     useEffect(() => {
         if(username && username.userid ){
+            console.log(unreadNewMsg);
+            if(unreadNewMsg){
+                var tempNewMsg = [];
+                for (let msgObj of unreadNewMsg){
+                    let msg = msgObj.msg; // get the msg array from the message object
+                    for (let i = 0; i < msg.length; i++) {
+                        let tempObj = {
+                        sender: msgObj.sender,
+                        isleft: msgObj.isLeft,
+                        msgBody: msg[i],
+                        recvId: msgObj.recvId
+                        };
+                        tempNewMsg.push(tempObj);
+                    }
+                }
+                setMessages((prevMsg)=>[...prevMsg,...tempNewMsg]);
+                console.log(tempNewMsg);
+            }
             const tempSocket  = io("http://localhost:8080/",{
                 reconnection : true,
                 query : {
@@ -93,7 +110,6 @@ function RightSideSection(props) {
                     setMessages((prevMsg)=> [...prevMsg, newMessage]);
                 }
             });
- 
             document.getElementsByClassName("msgInput")[0].value="";
            
     }
@@ -141,13 +157,14 @@ function RightSideSection(props) {
                 <div className="chatContainer h-vh89 pt-2">
                     <div style={{height:"92%"}} className="chatMainContainer overflow-y-scroll scrollbar w-full" >
                         {/* {console.log(activeChatIdSlice.username,messages)} */}
+                        {/* {console.log(messages)} */}
                          {messages.map((message,ind) =>
                          //checking if rec is user (if so then checking active chat is of sender )  OR checking if sender is curr user (if so then checking rec window is currently active)
                          ((message.recvId===username.userid && message.sender===activeChatIdSlice.username )||(message.sender===username.username && message.recvId===activeChatIdSlice.id) )? 
                             <MessageBox
                             key={ind}
                             msgId={message.msgId}
-                            isLeft={message.isLeft}
+                            isLeft={message.isLeft===1 ?  1 :0}
                             msgBody={message.msgBody} 
                             /> : ""
                         )}
