@@ -4,6 +4,7 @@ const {loginModel} = require("../model/loginModel")
 const {contactModel} = require("../model/contactModel")
 
 
+
 const bcrypt = require("bcrypt");
 const salt = 10;
 router.post("/",async(req,res)=>{

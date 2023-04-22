@@ -1,6 +1,6 @@
 const  {loginModel} = require("../model/loginModel")
 const  {contactModel} = require("../model/contactModel")
-
+const {messagesModel} = require("../model/messagesModel");
 
 
 const socketHandlers = (io) => {
@@ -20,6 +20,14 @@ const socketHandlers = (io) => {
     socket.emit('roomACK', roomId);
     try {
       socket.on('newMsg',async(args)=>{
+        
+        /*args format
+        {
+          msgBody: msg body
+          senderid: sender userid
+          recRoomId: recv useid
+        }
+        */
         // console.log("new",args)
         var senderUsername="";
         var isSenderIsSavedInRecSide =false;
@@ -48,6 +56,12 @@ const socketHandlers = (io) => {
             await contactResponse.save();
             isSenderIsSavedInRecSide=false;
           };
+        //storing to mongodb
+        const newMessage = await new messagesModel({
+          sharedId : args.recRoomId>args.senderid ? args.recRoomId.concat(args.senderid) : args.senderid.concat(args.recRoomId),
+          msgBody : args.msgBody,
+          senderId : args.senderid,
+        }).save();
 
         //sedning msg to room 
         if(!isSenderIsSavedInRecSide){

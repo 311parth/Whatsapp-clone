@@ -37,7 +37,7 @@ function Navbar() {
                         },
                         withCredentials: true
                     }).then((response) => {
-                        if(!response || !response.data){
+                        if(!response || !response.data || response.status===500){
                             toast.error("Something went wrong try Again")
                             return
                         }

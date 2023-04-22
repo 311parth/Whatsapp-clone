@@ -2,6 +2,8 @@ const express = require("express");
 let router = express.Router();
 const {loginModel} = require("../model/loginModel")
 const {contactModel} = require("../model/contactModel")
+const {conversationModel} = require("../model/conversationModel")
+
 const getLoggedUserData = require("../helper/getLoggedUserData");
 router.post("/addNew",async(req,res)=>{
     const reqBody = {
@@ -18,6 +20,8 @@ router.post("/addNew",async(req,res)=>{
             // console.log(LoggedUserData)
             
             const contactResponse =  await contactModel.findOne({username : LoggedUserData.username})
+
+            var isDuplicate = false;//flag for duplicate 
             //checking if user have any contacts ... if no then creating one else pushing new to contact array
             if(!contactResponse){
                 const newContact =  await new contactModel({
@@ -45,14 +49,26 @@ router.post("/addNew",async(req,res)=>{
                     }else{
                         if(!contactResOfFind.saved){
                             //that means contact is there but flag saved is 0 so its unsaved..
+                            //so changing  it saved 
                             contactResponse.contacts.find(el=>el.username===reqBody.username).saved=1;
                             contactResponse.save();
                         }else{
                             //contact is saved already 
                             res.json({duplicate : 1})
+                            isDuplicate = true;
                             return;
                         }
                     }
+            }
+            if(!isDuplicate){//if not duplicate then make a document inside conversationModel
+                if(response.uuid && LoggedUserData.userid){
+                    //comparing both id and getting shared it based on lexicographic (dictionary) comparison between the two strings based on their Unicode values
+                    var sharedId = response.uuid>LoggedUserData.userid ? response.uuid.concat(LoggedUserData.userid) : LoggedUserData.userid.concat(response.uuid);  ;
+                    const newConversation = await new conversationModel({
+                        sharedId :  sharedId,
+                        participants :[response.username,LoggedUserData.username],
+                    }).save();
+                }
             }
             res.json({//if found then sends username and email with found flag
                 found : 1,
@@ -63,7 +79,7 @@ router.post("/addNew",async(req,res)=>{
         }else{//requested new user not found 
             res.json({found:0})
         }
-    } catch (error) {
+    } catch (error){
         console.log(error);
         res.sendStatus(500)
     }

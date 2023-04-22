@@ -5,6 +5,7 @@ const loginSchema = new mongoose.Schema({
     uuid: {
         type: String,
         default: () => nanoid(7),
+        unique: true
     },
     email : String,
     username: String,

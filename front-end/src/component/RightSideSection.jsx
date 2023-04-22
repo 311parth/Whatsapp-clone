@@ -37,7 +37,7 @@ function RightSideSection(props) {
                     for (let i = 0; i < msg.length; i++) {
                         let tempObj = {
                         sender: msgObj.sender,
-                        isleft: msgObj.isLeft,
+                        isLeft: msgObj.isLeft,
                         msgBody: msg[i],
                         recvId: msgObj.recvId
                         };

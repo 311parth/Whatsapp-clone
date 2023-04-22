@@ -11,7 +11,7 @@ export const contactsSlice = createSlice({
         },
         pushContact(state,action){
             // state.contacts.push(action.payload);
-            const contactIndex = state.contacts.findIndex((contact) => contact.id === action.payload.id);
+            const contactIndex = state.contacts.findIndex((contact) => contact.userid === action.payload.userid);
             if (contactIndex === -1) {
             // contact not found, add it
             state.contacts.push(action.payload);
