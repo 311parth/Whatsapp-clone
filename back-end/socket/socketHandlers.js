@@ -1,10 +1,10 @@
 const  {loginModel} = require("../model/loginModel")
 const  {contactModel} = require("../model/contactModel")
 const {messagesModel} = require("../model/messagesModel");
+const verifyToken = require("../helper/verifyAuthToken");
 
 
 const socketHandlers = (io) => {
-    
   io.on('connection',async (socket) => { 
     const roomId = socket.handshake.query.roomId;
     // console.log(roomId)

@@ -6,6 +6,7 @@ import { setActiveChatId } from '../store/activeChatIdSlice';
 import { io } from "socket.io-client";  
 import {pushContact} from "../store/contactsSlice"
 import {newMsgRec} from "../helper/socketHanlders.js";
+import axios from 'axios';
 
 function RightSideSection(props) {
     const [socket,setSocket] = useState(0);
@@ -26,7 +27,12 @@ function RightSideSection(props) {
           console.log(7,newMessage)
           setMessages((prevMsg)=> [...prevMsg, newMessage]);
     };
+    useEffect(() => {
+        //fetching messages from server
+        return () => {
 
+        }
+    }, [])
     useEffect(() => {
         if(username && username.userid ){
             console.log(unreadNewMsg);

@@ -37,12 +37,14 @@ const testRoute = require("./routes/test");
 const signupRoute = require("./routes/signup")
 const loginRoute = require("./routes/login")
 const contactRoute = require("./routes/contact")
+const messagesRoute = require("./routes/messages");
+
 
 app.use("/api/v1/test",testRoute);
 app.use("/api/v1/signup",signupRoute)
 app.use("/api/v1/login",loginRoute)
 app.use("/api/v1/contact",contactRoute)
-
+app.use("/api/v1/messages",messagesRoute)
 server.listen(port,()=>{
     console.log("server is running on port ",port)
 })

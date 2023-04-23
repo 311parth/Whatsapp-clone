@@ -5,7 +5,8 @@ const {contactModel} = require("../model/contactModel")
 const {conversationModel} = require("../model/conversationModel")
 
 const getLoggedUserData = require("../helper/getLoggedUserData");
-router.post("/addNew",async(req,res)=>{
+const verifyToken = require("../helper/verifyAuthToken");
+router.post("/addNew",verifyToken,async(req,res)=>{
     const reqBody = {
         username: req.body.username,
         email : req.body.email

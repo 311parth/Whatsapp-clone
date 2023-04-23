@@ -33,7 +33,7 @@ router.post("/",async(req,res)=>{
 
 
 
-router.post("/isauthenticated",verifyAuthToken,async(req,res)=>{
+router.post("/isauthenticated",async(req,res)=>{
 //    res.json({"isauthenticated" : 1});
     if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
         const LoggedUserData = await getLoggedUserData(req.headers.authorization.split(' ')[1]); 
