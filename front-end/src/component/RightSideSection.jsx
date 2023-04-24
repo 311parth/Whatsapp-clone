@@ -29,10 +29,43 @@ function RightSideSection(props) {
     };
     useEffect(() => {
         //fetching messages from server
-        return () => {
+        console.log(username,activeChatIdSlice);
+        if(!username || !activeChatIdSlice || activeChatIdSlice.id===-1 || activeChatIdSlice.id===0)return;
+        axios({
+            method: "POST",
+            url: "/api/v1/messages",
+            data: {
+                loggedUserid: username.userid,
+                activeChatUserid : activeChatIdSlice.id,
+            },
+            withCredentials: true,
+            headers:{
+                Authorization : sessionStorage.getItem("secret")
+            }
+        }).then((response) => {
+            // console.log("msg",response.data);
+            
+            if(response && response.data && response.data.messagesQueryRes){
+                const responseMsgArr = response.data.messagesQueryRes;
 
+                const newResponseMessageArr = responseMsgArr.map((ele, index) => ({
+                  msgId: messages.length + 1 + index,
+                  isLeft: ele.senderId === username.userid ? 0 : 1,
+                  msgBody: ele.msgBody,
+                  sender: ele.senderId === username.userid ? username.username : activeChatIdSlice.username,
+                  recvId: ele.senderId === username.userid ? activeChatIdSlice.id : username.userid,
+                  time: ele.time
+                }));
+              
+                newResponseMessageArr.sort((a, b) => new Date(a.time) - new Date(b.time));
+              
+                setMessages(prevMsg => [...prevMsg, ...newResponseMessageArr]);
+            }
+        });
+        return () => {
         }
-    }, [])
+    }, [activeChatIdSlice.id])
+    console.log(messages);
     useEffect(() => {
         if(username && username.userid ){
             console.log(unreadNewMsg);
@@ -167,13 +200,15 @@ function RightSideSection(props) {
                          {messages.map((message,ind) =>
                          //checking if rec is user (if so then checking active chat is of sender )  OR checking if sender is curr user (if so then checking rec window is currently active)
                          ((message.recvId===username.userid && message.sender===activeChatIdSlice.username )||(message.sender===username.username && message.recvId===activeChatIdSlice.id) )? 
-                            <MessageBox
-                            key={ind}
+                         <MessageBox
+                         key={ind}
                             msgId={message.msgId}
                             isLeft={message.isLeft===1 ?  1 :0}
                             msgBody={message.msgBody} 
                             /> : ""
                         )}
+                       
+
                     </div>
                     <div style={{height:"8%"}} className=" chatInputContainer w-full h-16 bottom-0 flex bg-primary-light-gray justify-center items-center space-x-2 " >
                         <input className="msgInput w-10/12 h-10 p-2 text-md rounded-full text-primary-dark-gray" type="text" name="" id="" placeholder="Type a message" ref={msgInput}/>
