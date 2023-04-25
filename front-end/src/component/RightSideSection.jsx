@@ -3,6 +3,8 @@ import {useDispatch,useSelector} from "react-redux"
 import MessageBox from './MessageBox';
 import { useNavigate } from "react-router-dom";
 import { setActiveChatId } from '../store/activeChatIdSlice';
+import {  setVisited} from '../store/visitedContacts';
+
 import { io } from "socket.io-client";  
 import {pushContact} from "../store/contactsSlice"
 import {newMsgRec} from "../helper/socketHanlders.js";
@@ -12,6 +14,7 @@ function RightSideSection(props) {
     const [socket,setSocket] = useState(0);
     const username = useSelector((state)=>state.usernameSlice);
     const activeChatIdSlice = useSelector((state)=>state.activeChatIdSlice);
+    const visitedContacts = useSelector((state)=>state.visitedContacts);
     const [messages, setMessages] = useState([]);
     var unreadNewMsg = useSelector((state)=>state.unreadNewMsg);
 
@@ -22,15 +25,20 @@ function RightSideSection(props) {
             isLeft:1,
             msgBody: args.body,
             sender : args.sender,
-            recvId : args.recvId
+            recvId : args.recvId,
+            time: args.time
           };
           console.log(7,newMessage)
           setMessages((prevMsg)=> [...prevMsg, newMessage]);
     };
     useEffect(() => {
         //fetching messages from server
-        console.log(username,activeChatIdSlice);
+        // console.log(username,activeChatIdSlice);
         if(!username || !activeChatIdSlice || activeChatIdSlice.id===-1 || activeChatIdSlice.id===0)return;
+        if(visitedContacts.includes(activeChatIdSlice.id))return;
+        dispatch(setVisited({userid: activeChatIdSlice.id}));
+        console.log("fetch start")
+
         axios({
             method: "POST",
             url: "/api/v1/messages",
@@ -43,7 +51,7 @@ function RightSideSection(props) {
                 Authorization : sessionStorage.getItem("secret")
             }
         }).then((response) => {
-            // console.log("msg",response.data);
+            console.log("msg",response.data);
             
             if(response && response.data && response.data.messagesQueryRes){
                 const responseMsgArr = response.data.messagesQueryRes;
@@ -78,7 +86,8 @@ function RightSideSection(props) {
                         sender: msgObj.sender,
                         isLeft: msgObj.isLeft,
                         msgBody: msg[i],
-                        recvId: msgObj.recvId
+                        recvId: msgObj.recvId,
+                        time : msgObj.time
                         };
                         tempNewMsg.push(tempObj);
                     }
@@ -118,6 +127,7 @@ function RightSideSection(props) {
     var usernameSlice = useSelector((state)=>state.usernameSlice);
     var socketRoomSlice = useSelector((state)=>state.socketRoomSlice);
 
+
     
     // useEffect(() => {
     //     console.log("RightSideSection :  ",activeChatId)
@@ -144,7 +154,8 @@ function RightSideSection(props) {
                         isLeft:0,
                         msgBody:  msgInputBody,
                         sender : username.username,
-                        recvId : activeChatIdSlice.id
+                        recvId : activeChatIdSlice.id,
+                        time : Date()
                       };
                     setMessages((prevMsg)=> [...prevMsg, newMessage]);
                 }
@@ -160,7 +171,8 @@ function RightSideSection(props) {
                 isLeft:0,
                 msgBody:  msgInputBody,
                 sender:username.username,
-                recvId : activeChatIdSlice.id
+                recvId : activeChatIdSlice.id,
+                time : Date()
               };
             setMessages((prevMsg)=> [...prevMsg, newMessage]);
         }
@@ -194,7 +206,7 @@ function RightSideSection(props) {
                     </div>
                 </div>
                 <div className="chatContainer h-vh89 pt-2">
-                    <div style={{height:"92%"}} className="chatMainContainer overflow-y-scroll scrollbar w-full" >
+                    <div style={{height:"92%"}} className="chatMainContainer overflow-y-scroll scrollbar w-full px-3" >
                         {/* {console.log(activeChatIdSlice.username,messages)} */}
                         {/* {console.log(messages)} */}
                          {messages.map((message,ind) =>
@@ -205,6 +217,7 @@ function RightSideSection(props) {
                             msgId={message.msgId}
                             isLeft={message.isLeft===1 ?  1 :0}
                             msgBody={message.msgBody} 
+                            time={message.time}
                             /> : ""
                         )}
                        

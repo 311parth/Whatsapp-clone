@@ -4,6 +4,7 @@ import usernameSlice from "./usernameSlice";
 import contactsSlice from "./contactsSlice";
 import socketRoomSlice from "./socketRoomSlice";
 import unreadNewMsg from "./unreadNewMsg"
+import visitedContacts from "./visitedContacts"
 
 const store = configureStore({
     reducer:{
@@ -11,7 +12,8 @@ const store = configureStore({
         usernameSlice : usernameSlice,
         contactsSlice : contactsSlice,
         socketRoomSlice:socketRoomSlice,
-        unreadNewMsg : unreadNewMsg
+        unreadNewMsg : unreadNewMsg,
+        visitedContacts : visitedContacts
     },
 })
 

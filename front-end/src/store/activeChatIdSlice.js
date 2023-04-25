@@ -14,6 +14,6 @@ export const activeChatIdSlice = createSlice({
     }
 })
 
-export const {setActiveChatId}  = activeChatIdSlice.actions;
+export const {setActiveChatId,setVisited}  = activeChatIdSlice.actions;
 
 export default activeChatIdSlice.reducer;

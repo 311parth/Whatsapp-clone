@@ -2,6 +2,7 @@ import React,{useState,useEffect,useRef} from 'react'
 import {useDispatch,useSelector} from "react-redux"
 import { setActiveChatId } from '../store/activeChatIdSlice';
 import { useNavigate ,useLocation} from "react-router-dom";
+import {setVisited} from "../store/visitedContacts"
 import getStoreState from  "../helper/getStoreState.js"
 function ChatList(props) {
 
@@ -21,7 +22,7 @@ function ChatList(props) {
         activeChatInfo = contactsSlice.contacts.find(contactObj => contactObj.username===props.ChatListUsername);
         // console.log(activeChatInfo)
         if(activeChatInfo && activeChatInfo.userid){
-            dispatch(setActiveChatId({id: activeChatInfo.userid,username: props.ChatListUsername }))
+            dispatch(setActiveChatId({id: activeChatInfo.userid,username: props.ChatListUsername}))
         }else{
             //TODO: error message
         }

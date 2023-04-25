@@ -34,6 +34,7 @@ const socketHandlers = (io) => {
         //checking if the user is alredy in cantact of sender 
         const contactResponse = await contactModel.findOne({uuid:args.recRoomId});
         var senderUserResponse;
+        var newMessage ;
           //checking if the rec have saved contact of sender
           var contactMatched= contactResponse.contacts.find(ele=>ele.userid===args.senderid);
           if(contactMatched){
@@ -57,18 +58,18 @@ const socketHandlers = (io) => {
             isSenderIsSavedInRecSide=false;
           };
         //storing to mongodb
-        const newMessage = await new messagesModel({
+        newMessage = await new messagesModel({
           sharedId : args.recRoomId>args.senderid ? args.recRoomId.concat(args.senderid) : args.senderid.concat(args.recRoomId),
           msgBody : args.msgBody,
           senderId : args.senderid,
         }).save();
-
+        // console.log(newMessage);
         //sedning msg to room 
         if(!isSenderIsSavedInRecSide){
           // io.to(args.recRoomId).to(args.senderid).emit('msgRec', {body : args.msgBody,sender : senderUsername,email:senderUserResponse.email,userid:senderUserResponse.uuid,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide});
-          io.to(args.recRoomId).emit('msgRec', {body : args.msgBody,sender : senderUsername,email:senderUserResponse.email,userid:senderUserResponse.uuid,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide,recvId : args.recRoomId});
+          io.to(args.recRoomId).emit('msgRec', {body : args.msgBody,sender : senderUsername,email:senderUserResponse.email,userid:senderUserResponse.uuid,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide,recvId : args.recRoomId ,time : newMessage.time });
         }else{
-          io.to(args.recRoomId).emit('msgRec', {body : args.msgBody,sender : senderUsername,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide,recvId : args.recRoomId});
+          io.to(args.recRoomId).emit('msgRec', {body : args.msgBody,sender : senderUsername,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide,recvId : args.recRoomId,time : newMessage.time});
         }
         io.to(args.senderid).emit('msgSendACK', {ACK:1});
           

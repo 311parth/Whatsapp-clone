@@ -1,27 +1,36 @@
-import React,{useEffect} from 'react'
+import React from "react";
 
 function MessageBox(props) {
+  const isLeft = props.isLeft;
+  const senderName = props.senderName;
+  const msgBody = props.msgBody;
+  var time = props.time;
 
-    return (
-        <>
-            <div className="my-0.5 mx-2">
-                <div id={"MessageBox-"+props.msgId} className={`MessageBox p-1    w-fit max-w-xl  text-sm  h-fit   border-primary-dark-gray rounded-md  bg-opacity-80
-                ${props.isLeft ? "bg-primary-light-gray " : "  bg-sec-light-green ml-auto mr-0"} `}
-                style={{
-                    maxWidth:"85%",
-                    minWidth:"1.5rem",
-                    borderWidth:"0.5px",
-                }}
-                >
-                    {/* <span className="w-fit ">{props.msgBody ? props.MsgBody : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, eos!"} */}
-                    <span className="w-fit ">{props.msgBody}
-                    </span>
-                </div>
-            </div>
+  var date = new Date(time);
+  var timeString = `${date.getHours()} : ${ date.getMinutes() }  `  ;
 
+  const chatBubbleStyles = `max-w-3/4 w-fit py-2 px-4 rounded-2xl border border-gray-300 ${
+    isLeft ? "bg-white" : "bg-green-200 ml-auto"
+  }`;
 
-        </>
-    )
+  const chatBubbleContainerStyles = `flex flex-row ${isLeft ? "items-start" : "items-end"} ${
+    isLeft ? "justify-start" : "justify-end"
+  }`;
+
+  return (
+    <div className={chatBubbleContainerStyles}>
+      <div className={chatBubbleStyles}>
+        {senderName && (
+          <div className="text-gray-500 text-xs mb-1 ">{isLeft ? senderName : "You"}</div>
+        )}
+        <div className="flex flex-col items-end">
+        <span className="text-sm">{msgBody}</span>
+        <span className="text-gray-500 text-[0.7rem] text-right">{timeString}</span>
+
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default MessageBox
+export default MessageBox;

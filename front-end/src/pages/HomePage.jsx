@@ -19,7 +19,7 @@ function HomePage() {
     const activeChatId = useSelector((state)=>state.activeChatIdSlice);
     const usernameSlice = useSelector((state)=>state.usernameSlice);
 
-
+    //TODO: messages is getting disappear when back is pressed in small screen
     // console.log("Homepage :  ",activeChatId)
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -33,7 +33,8 @@ function HomePage() {
             sender : args.sender,
             isLeft:1,
             msg: args.body,
-            recvId : args.recvId
+            recvId : args.recvId,
+            time : args.time
           };
         dispatch(setUnreadNewMsg(newMessage));
     };
