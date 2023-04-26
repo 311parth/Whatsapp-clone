@@ -155,7 +155,7 @@ function RightSideSection(props) {
                         msgBody:  msgInputBody,
                         sender : username.username,
                         recvId : activeChatIdSlice.id,
-                        time : Date()
+                        time : args.time
                       };
                     setMessages((prevMsg)=> [...prevMsg, newMessage]);
                 }
@@ -172,7 +172,7 @@ function RightSideSection(props) {
                 msgBody:  msgInputBody,
                 sender:username.username,
                 recvId : activeChatIdSlice.id,
-                time : Date()
+                time : args.time
               };
             setMessages((prevMsg)=> [...prevMsg, newMessage]);
         }

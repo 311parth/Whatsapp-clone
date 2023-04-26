@@ -71,7 +71,7 @@ const socketHandlers = (io) => {
         }else{
           io.to(args.recRoomId).emit('msgRec', {body : args.msgBody,sender : senderUsername,isSenderIsSavedInRecSide : isSenderIsSavedInRecSide,recvId : args.recRoomId,time : newMessage.time});
         }
-        io.to(args.senderid).emit('msgSendACK', {ACK:1});
+        io.to(args.senderid).emit('msgSendACK', {ACK:1,time: newMessage.time});
           
 
         /*
