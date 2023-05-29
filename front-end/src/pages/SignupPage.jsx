@@ -13,18 +13,28 @@ function SignupPage() {
     const profilePicture = useRef();
     function signupSubmit(e) {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append('email', email.current.value);
+        formData.append('fullname', fullname.current.value);
+        formData.append('username', username.current.value);
+        formData.append('password', password.current.value);
+        formData.append('inputProfileImg', profilePicture.current.files[0]);
+
+        console.log(profilePicture.current.value);
         axios({
             method: "POST",
             url: "/api/v1/signup",
-            data: {
-                email: email.current.value,
-                fullname: fullname.current.value,
-                username: username.current.value,
-                password: password.current.value,
-            },
-            // headers: { 
-            //     'content-type': 'application/json'
+            data : formData,
+            // data: {
+            //     email: email.current.value,
+            //     fullname: fullname.current.value,
+            //     username: username.current.value,
+            //     password: password.current.value,
             // },
+            headers: { 
+                // 'content-type': 'application/json'
+                "Content-Type": "multipart/form-data"
+            },
             withCredentials: true
         }).then((response) => {
             console.log(response)

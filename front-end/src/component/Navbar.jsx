@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import {pushContact} from "../store/contactsSlice"
 import { useDispatch } from 'react-redux';
+import { Link } from "react-router-dom";
 
 function Navbar() {
     
@@ -112,7 +113,7 @@ function Navbar() {
                                 }}>New Contact</li>
                                 <li className="text-sm  py-2.5 px-5 hover:bg-white">Profile </li>
                                 <li className="text-sm  py-2.5 px-5 hover:bg-white">Settings</li>
-                                <li className="text-sm  py-2.5 px-5 hover:bg-white">Logout</li>
+                                <li  className="text-sm w-full py-2.5 px-5 hover:bg-white">Logout</li>
                             </ul>
                         </li>
                     </ul>

@@ -7,7 +7,7 @@ function MessageBox(props) {
   var time = props.time;
 
   var date = new Date(time);
-  var timeString = `${date.getHours()} : ${ date.getMinutes() }  `  ;
+  var timeString = `${date.getDate()} - ${date.getMonth()} - ${date.getFullYear()} , ${date.getHours()} : ${ date.getMinutes() }  `  ;
 
   const chatBubbleStyles = `max-w-3/4 w-fit py-2 px-4 rounded-2xl border border-gray-300 ${
     isLeft ? "bg-white" : "bg-green-200 ml-auto"
