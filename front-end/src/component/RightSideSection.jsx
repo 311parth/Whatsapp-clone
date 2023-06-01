@@ -14,7 +14,6 @@ function RightSideSection(props) {
     const [socket,setSocket] = useState(0);
     const username = useSelector((state)=>state.usernameSlice);
     const activeChatIdSlice = useSelector((state)=>state.activeChatIdSlice);
-    const visitedContacts = useSelector((state)=>state.visitedContacts);
     const [messages, setMessages] = useState([]);
     var unreadNewMsg = useSelector((state)=>state.unreadNewMsg);
 
@@ -36,10 +35,7 @@ function RightSideSection(props) {
         //fetching messages from server
         // console.log(username,activeChatIdSlice);
         if(!username || !activeChatIdSlice || activeChatIdSlice.id===-1 || activeChatIdSlice.id===0)return;
-        if(visitedContacts.includes(activeChatIdSlice.id))return;
-        dispatch(setVisited({userid: activeChatIdSlice.id}));
         console.log("fetch start")
-
         axios({
             method: "POST",
             url: "/api/v1/messages",
@@ -68,17 +64,18 @@ function RightSideSection(props) {
               
                 newResponseMessageArr.sort((a, b) => new Date(a.time) - new Date(b.time));
               
-                setMessages(prevMsg => [...prevMsg, ...newResponseMessageArr]);
+                setMessages((prevMsg) => [...prevMsg, ...newResponseMessageArr]);
             }
         });
         return () => {
+            setMessages([]);
         }
     }, [activeChatIdSlice.id])
     console.log(messages);
     useEffect(() => {
         if(username && username.userid ){
-            console.log(unreadNewMsg);
-            if(unreadNewMsg){
+            if(unreadNewMsg && unreadNewMsg.length!==0) {
+                console.log(unreadNewMsg,unreadNewMsg.length);
                 var tempNewMsg = [];
                 for (let msgObj of unreadNewMsg){
                     let msg = msgObj.msg; // get the msg array from the message object
@@ -94,7 +91,7 @@ function RightSideSection(props) {
                     }
                 }
                 setMessages((prevMsg)=>[...prevMsg,...tempNewMsg]);
-                console.log(tempNewMsg);
+                console.log(tempNewMsg,messages);
             }
             const tempSocket  = io("http://localhost:8080/",{
                 reconnection : true,
@@ -105,10 +102,10 @@ function RightSideSection(props) {
             setSocket(tempSocket);//to use socket outside of this useeffect -> socket
             //and for inside -> tempSocket
             tempSocket.on("connect",()=>{
-                console.log(tempSocket.id)
+                // console.log(tempSocket.id)
             }) 
             tempSocket.on("roomACK",()=>{
-                console.log(tempSocket.id)
+                // console.log(tempSocket.id)
                 // console.log(tempSocket.rooms,socket)
             }) 
             newMsgRec(tempSocket,dispatch,onMsgRec,username);
@@ -119,9 +116,6 @@ function RightSideSection(props) {
 
     },[username])
 
-    //temp
-    // const socket = props.socket;
-    // console.log(props)
     const navigate = useNavigate(); 
     const dispatch = useDispatch();
     var activeChatId = useSelector((state)=>state.activeChatIdSlice);
@@ -130,9 +124,6 @@ function RightSideSection(props) {
 
 
     
-    // useEffect(() => {
-    //     console.log("RightSideSection :  ",activeChatId)
-    // }, [])
     var isDefault =0;
     if(activeChatId.id===-1){
         isDefault=1;

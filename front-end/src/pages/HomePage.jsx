@@ -51,10 +51,10 @@ function HomePage() {
                     setSocket(tempSocket);//to use socket outside of this useeffect -> socket
                     //and for inside -> tempSocket
                     tempSocket.on("connect",()=>{
-                        console.log(tempSocket.id)
+                        // console.log(tempSocket.id)
                     }) 
                     tempSocket.on("roomACK",()=>{
-                        console.log(tempSocket.id)
+                        // console.log(tempSocket.id)
                         // console.log(tempSocket.rooms,socket)
                     }) 
                     newMsgRec(tempSocket,dispatch,saveUnreadNewMsg,username);

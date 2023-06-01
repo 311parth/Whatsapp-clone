@@ -39,7 +39,7 @@ const loginRoute = require("./routes/login")
 const contactRoute = require("./routes/contact")
 const messagesRoute = require("./routes/messages");
 const profileRoute = require("./routes/profile");
-
+const logoutRoute = require("./routes/logout")
 
 
 app.use("/api/v1/test",testRoute);
@@ -48,6 +48,8 @@ app.use("/api/v1/login",loginRoute)
 app.use("/api/v1/contact",contactRoute)
 app.use("/api/v1/messages",messagesRoute)
 app.use("/api/v1/profile",profileRoute)
+app.use("/api/v1/logout",logoutRoute)
+
 
 
 

@@ -20,7 +20,6 @@ function SignupPage() {
         formData.append('password', password.current.value);
         formData.append('inputProfileImg', profilePicture.current.files[0]);
 
-        console.log(profilePicture.current.value);
         axios({
             method: "POST",
             url: "/api/v1/signup",
@@ -37,7 +36,7 @@ function SignupPage() {
             },
             withCredentials: true
         }).then((response) => {
-            console.log(response)
+            // console.log(response)
             if (response.data.email) {
                 toast.error("Email is already registered")
             } else if (response.data.username) {

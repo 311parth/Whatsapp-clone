@@ -5,9 +5,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import {pushContact} from "../store/contactsSlice"
 import { useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
+import {useNavigate} from "react-router-dom"
 
 function Navbar() {
     
+    const navigate = useNavigate();
     const email = useRef();
     const username = useRef();
     const dispatch = useDispatch();
@@ -85,7 +87,30 @@ function Navbar() {
 
             </>
         )
-}
+    }
+
+    function logout() {
+        console.log("loggin out")
+        axios({
+            method:"POST",
+            url : "/api/v1/logout",
+            data:{
+
+            },
+            withCredentials:true,
+            headers:{
+                Authorization:`Bearer ${sessionStorage.getItem("secret")}`
+            }
+        }).then((response)=>{
+            if(response && response.data && response.data.logoutAck){
+                console.log(response.data);
+                sessionStorage.removeItem("secret")
+                navigate("/");
+                
+            }
+        })
+    }
+
     
     // console.log(modalContant)
     return (
@@ -113,7 +138,7 @@ function Navbar() {
                                 }}>New Contact</li>
                                 <li className="text-sm  py-2.5 px-5 hover:bg-white">Profile </li>
                                 <li className="text-sm  py-2.5 px-5 hover:bg-white">Settings</li>
-                                <li  className="text-sm w-full py-2.5 px-5 hover:bg-white">Logout</li>
+                                <li  className="text-sm w-full py-2.5 px-5 hover:bg-white" onClick={logout}>Logout</li>
                             </ul>
                         </li>
                     </ul>
