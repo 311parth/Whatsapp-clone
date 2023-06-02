@@ -16,6 +16,7 @@ router.post("/",verifyAuthToken,async (req,res)=>{
             activeChatUserid
         }
     */
+
     var loggedUserid = req.body.loggedUserid;
     var activeChatUserid = req.body.activeChatUserid;
 

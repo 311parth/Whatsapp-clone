@@ -1,9 +1,9 @@
-import React,{useRef} from 'react'
+import React,{useRef,useEffect,useState} from 'react'
 import PopUpBox from './PopUpBox';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import {pushContact} from "../store/contactsSlice"
-import { useDispatch } from 'react-redux';
+import { useDispatch ,useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
 import {useNavigate} from "react-router-dom"
 
@@ -13,6 +13,30 @@ function Navbar() {
     const email = useRef();
     const username = useRef();
     const dispatch = useDispatch();
+    const LoggedusernameSlice = useSelector((state)=>state.usernameSlice);
+    const [imageUrl, setImageUrl] = useState('');
+    useEffect(() => {
+        if(!LoggedusernameSlice || !LoggedusernameSlice.username){
+            return;
+        }
+        const fetchProfileImage = async () => {
+            console.log(LoggedusernameSlice);
+          try {
+            const response = await axios.get(`/api/v1/profile/profileImg/${LoggedusernameSlice?.username}`, {
+              withCredentials: true,
+              headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("secret")}`,
+              },
+              responseType: 'blob', // Set the response type to blob
+            })
+            setImageUrl(URL.createObjectURL(response.data));
+          } catch (error) {
+            console.error(error);
+          }
+        };
+    
+        fetchProfileImage();
+      }, [LoggedusernameSlice]);
     function navMore() {
         // console.log("navMore click")
         var navMoreOption = document.getElementById("navMoreOption");
@@ -118,7 +142,7 @@ function Navbar() {
             <nav>
                 <div className="bg-primary-light-gray flex list-none justify-start w-full  items-center">
                     <ul className="p-3 w-2/5  flex items-center px-8">
-                        <img src="/placeholder200_200.svg" alt="" className="w-10 h-10 rounded-full"/>
+                        {imageUrl && <img src={imageUrl} alt="Profile Image" className="w-10 h-10 rounded-full"/>}
                     </ul>
                     <ul className="w-3/5 px-3  h-full flex justify-around items-center  hover:cursor-pointer " >
                         <li>

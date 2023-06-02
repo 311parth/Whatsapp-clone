@@ -16,7 +16,7 @@ function RightSideSection(props) {
     const activeChatIdSlice = useSelector((state)=>state.activeChatIdSlice);
     const [messages, setMessages] = useState([]);
     var unreadNewMsg = useSelector((state)=>state.unreadNewMsg);
-
+    const [imageUrl, setImageUrl] = useState('');
     
     function onMsgRec(args){
         console.log(6,args);
@@ -67,6 +67,24 @@ function RightSideSection(props) {
                 setMessages((prevMsg) => [...prevMsg, ...newResponseMessageArr]);
             }
         });
+
+        const fetchProfileImage = async () => {
+            console.log(activeChatId);
+          try {
+            const response = await axios.get(`/api/v1/profile/profileImg/${activeChatId.username}`, {
+              withCredentials: true,
+              headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("secret")}`,
+              },
+              responseType: 'blob', // Set the response type to blob
+            })
+            setImageUrl(URL.createObjectURL(response.data));
+          } catch (error) {
+            console.error(error);
+          }
+        };
+    
+        fetchProfileImage();
         return () => {
             setMessages([]);
         }
@@ -185,7 +203,8 @@ function RightSideSection(props) {
                     {window.innerWidth<=700 ? 
                     <i className="material-icons  text-primary-dark-gray  IconSize-lg   hover:text-primary-green" onClick={navigateBack}>arrow_back</i>
                     : " "}
-                    <img src="/placeholder200_200.svg" className="w-10 h-10 rounded-full "/>
+                    {/* <img src="/placeholder200_200.svg" className="w-10 h-10 rounded-full "/> */}
+                    {imageUrl && <img src={imageUrl} alt="Profile Image" className="w-10 h-10 rounded-full"/>}
                     <div className="chatNavNameSection flex flex-col space-y-0.5 pl-2  w-full py-2 ">
                         <span className="chatUserName text-myMd ">{activeChatId.username} : {activeChatId.id}</span>
                         <span className="chatUserStatus text-xs text-primary-dark-gray">Online</span>
