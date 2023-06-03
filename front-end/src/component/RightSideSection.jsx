@@ -19,7 +19,7 @@ function RightSideSection(props) {
     const [imageUrl, setImageUrl] = useState('');
     
     function onMsgRec(args){
-        console.log(6,args);
+        // console.log(6,args);
         const newMessage = {
             msgId: messages.length + 1,
             isLeft:1,
@@ -28,14 +28,14 @@ function RightSideSection(props) {
             recvId : args.recvId,
             time: args.time
           };
-          console.log(7,newMessage)
+        //   console.log(7,newMessage)
           setMessages((prevMsg)=> [...prevMsg, newMessage]);
     };
     useEffect(() => {
         //fetching messages from server
         // console.log(username,activeChatIdSlice);
         if(!username || !activeChatIdSlice || activeChatIdSlice.id===-1 || activeChatIdSlice.id===0)return;
-        console.log("fetch start")
+        // console.log("fetch start")
         axios({
             method: "POST",
             url: "/api/v1/messages",
@@ -48,7 +48,7 @@ function RightSideSection(props) {
                 Authorization : sessionStorage.getItem("secret")
             }
         }).then((response) => {
-            console.log("msg",response.data);
+            // console.log("msg",response.data);
             
             if(response && response.data && response.data.messagesQueryRes){
                 const responseMsgArr = response.data.messagesQueryRes;
@@ -69,7 +69,7 @@ function RightSideSection(props) {
         });
 
         const fetchProfileImage = async () => {
-            console.log(activeChatId);
+            // console.log(activeChatId);
           try {
             const response = await axios.get(`/api/v1/profile/profileImg/${activeChatId.username}`, {
               withCredentials: true,
@@ -89,11 +89,11 @@ function RightSideSection(props) {
             setMessages([]);
         }
     }, [activeChatIdSlice.id])
-    console.log(messages);
+    // console.log(messages);
     useEffect(() => {
         if(username && username.userid ){
             if(unreadNewMsg && unreadNewMsg.length!==0) {
-                console.log(unreadNewMsg,unreadNewMsg.length);
+                // console.log(unreadNewMsg,unreadNewMsg.length);
                 var tempNewMsg = [];
                 for (let msgObj of unreadNewMsg){
                     let msg = msgObj.msg; // get the msg array from the message object
@@ -109,7 +109,7 @@ function RightSideSection(props) {
                     }
                 }
                 setMessages((prevMsg)=>[...prevMsg,...tempNewMsg]);
-                console.log(tempNewMsg,messages);
+                // console.log(tempNewMsg,messages);
             }
             const tempSocket  = io("http://localhost:8080/",{
                 reconnection : true,
@@ -154,10 +154,10 @@ function RightSideSection(props) {
     var msgInputBody;
     function submitMsg(){
             msgInputBody =msgInput.current.value; 
-            console.log("submitting msg",msgInputBody)
+            // console.log("submitting msg",msgInputBody)
             socket.emit("newMsg",{msgBody: msgInputBody,senderid :usernameSlice.userid ,recRoomId : activeChatIdSlice.id})
             socket.on('msgSendACK', (args) =>{
-                console.log("1")
+                // console.log("1")
                 if(args.ACK===1){
                     const newMessage = {
                         msgId: messages.length + 1,
@@ -174,7 +174,7 @@ function RightSideSection(props) {
            
     }
     socket && socket.on('msgSendACK', (args) =>{
-        console.log("1")
+        // console.log("1")
         if(args.ACK===1){
             const newMessage = {
                 msgId: messages.length + 1,
@@ -188,6 +188,17 @@ function RightSideSection(props) {
         }
     });
     socket && socket.off('msgSendACK') //removing event listener if ack is recieved (its called more than one time beacuse of the use effect so to stop that)
+
+    const [searchInput, setSearchInput] = useState(""); // state to store search input
+
+    const filteredMessages = searchInput
+        ? messages.filter((msg) =>
+            msg.msgBody.toLowerCase().includes(searchInput.toLowerCase())
+        )
+        : messages;
+    function searchContact(event) {
+        setSearchInput(event.target.value);
+    }
     function getDefaultRightContainer() {
         return(
             <div className="rightSideDefaultContainer  flex flex-col h-full justify-center items-center  text-primary-dark-gray">
@@ -199,30 +210,34 @@ function RightSideSection(props) {
     function getChatRightContainer() {
         return(
             <div className="rightSideChatContainer  bg-slate-200  h-full w-full  ">
-                <div className="topChatNav space-x-2 h-16  w-full bg-primary-light-gray flex  items-center pl-4 cursor-pointer">
+                <div className="topChatNav space-x-2 h-auto  w-full bg-primary-light-gray flex   items-center pl-4 cursor-pointer ">
                     {window.innerWidth<=700 ? 
                     <i className="material-icons  text-primary-dark-gray  IconSize-lg   hover:text-primary-green" onClick={navigateBack}>arrow_back</i>
                     : " "}
-                    {/* <img src="/placeholder200_200.svg" className="w-10 h-10 rounded-full "/> */}
                     {imageUrl && <img src={imageUrl} alt="Profile Image" className="w-10 h-10 rounded-full"/>}
-                    <div className="chatNavNameSection flex flex-col space-y-0.5 pl-2  w-full py-2 ">
-                        <span className="chatUserName text-myMd ">{activeChatId.username} : {activeChatId.id}</span>
-                        <span className="chatUserStatus text-xs text-primary-dark-gray">Online</span>
-                    </div>
-                    <div className="text-primary-dark-gray  ">
-                        <ul className="flex pr-6">
-                            <i  className="material-icons mx-4 hover:text-primary-green">search</i>
-                            <i  className="material-icons mx-4 hover:text-primary-green">more_vert</i>
-                        </ul>
+                    <div className="flex w-full items-center   justify-between    flex-col md:flex-row ">
+                        <div className="chatNavNameSection flex   space-y-0.5 pl-2  w-full py-2 flex-row  md:w-2/5 md:flex-col  ">
+                            <span className="chatUserName text-myMd ">{activeChatId.username} : {activeChatId.id}</span>
+                            <span className="chatUserStatus text-xs text-primary-dark-gray md:mx-0 mx-2 ">Online</span>
+                        </div>
+                        <div className="text-primary-dark-gray w-full ">
+                            <ul className="flex items-center ">
+                                <div className=" container  px-4 flex items-center text-sm h-10  bg-primary-light-gray rounded-3xl ">
+                                    <input type="text" name="" id="inputMsgSearch" placeholder="Search" value={searchInput} onChange={searchContact}  className=" bg-white  w-11/12   h-8  rounded-xl px-5 py-2 text-gray-500 outline-none invisible "  />
+                                    <i className="material-icons ml-1 stroke-primary-light-gray  outline-none text-primary-dark-gray hover:text-primary-green" onClick={()=>{
+                                        document.getElementById("inputMsgSearch").classList.toggle("invisible")
+                                    }}>search</i>
+                                </div>
+                                <i  className="material-icons mr-2 hover:text-primary-green">more_vert</i>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div className="chatContainer h-vh89 pt-2">
                     <div style={{height:"92%"}} className="chatMainContainer overflow-y-scroll scrollbar w-full px-3" >
-                        {/* {console.log(activeChatIdSlice.username,messages)} */}
-                        {/* {console.log(messages)} */}
-                         {messages.map((message,ind) =>
-                         //checking if rec is user (if so then checking active chat is of sender )  OR checking if sender is curr user (if so then checking rec window is currently active)
-                         ((message.recvId===username.userid && message.sender===activeChatIdSlice.username )||(message.sender===username.username && message.recvId===activeChatIdSlice.id) )? 
+
+                        {filteredMessages.map((message,ind) => (
+                            ((message.recvId===username.userid && message.sender===activeChatIdSlice.username )||(message.sender===username.username && message.recvId===activeChatIdSlice.id) )? 
                          <MessageBox
                          key={ind}
                             msgId={message.msgId}
@@ -230,9 +245,7 @@ function RightSideSection(props) {
                             msgBody={message.msgBody} 
                             time={message.time}
                             /> : ""
-                        )}
-                       
-
+                            ))}
                     </div>
                     <div style={{height:"8%"}} className=" chatInputContainer w-full h-16 bottom-0 flex bg-primary-light-gray justify-center items-center space-x-2 " >
                         <input className="msgInput w-10/12 h-10 p-2 text-md rounded-full text-primary-dark-gray" type="text" name="" id="" placeholder="Type a message" ref={msgInput}/>
