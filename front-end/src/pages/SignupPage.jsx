@@ -36,12 +36,14 @@ function SignupPage() {
             },
             withCredentials: true
         }).then((response) => {
-            // console.log(response)
+            console.log(response)
             if (response.data.email) {
                 toast.error("Email is already registered")
             } else if (response.data.username) {
                 toast.error("Username is already registered")
-            } else if (response.data.signup) {
+            }else if(response.data.profilePic){
+                toast.error("Enter valid profile pic file")
+            }else if (response.data.signup) {
                 toast.success("Signup successfull")
                 navigate("/",{
                     state:{

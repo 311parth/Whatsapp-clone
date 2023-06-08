@@ -131,7 +131,6 @@ function RightSideSection(props) {
                 tempSocket.disconnect();
             }
         }
-
     },[username])
 
     const navigate = useNavigate(); 
@@ -141,6 +140,7 @@ function RightSideSection(props) {
     var socketRoomSlice = useSelector((state)=>state.socketRoomSlice);
 
 
+const chatContainer = document.getElementById('chatMainContainer');
     
     var isDefault =0;
     if(activeChatId.id===-1){
@@ -173,6 +173,12 @@ function RightSideSection(props) {
             document.getElementsByClassName("msgInput")[0].value="";
            
     }
+
+    useEffect(() => {
+        if (chatContainer) {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+      }, [messages]);
     socket && socket.on('msgSendACK', (args) =>{
         // console.log("1")
         if(args.ACK===1){
@@ -199,6 +205,8 @@ function RightSideSection(props) {
     function searchContact(event) {
         setSearchInput(event.target.value);
     }
+
+
     function getDefaultRightContainer() {
         return(
             <div className="rightSideDefaultContainer  flex flex-col h-full justify-center items-center  text-primary-dark-gray">
@@ -216,9 +224,9 @@ function RightSideSection(props) {
                     : " "}
                     {imageUrl && <img src={imageUrl} alt="Profile Image" className="w-10 h-10 rounded-full"/>}
                     <div className="flex w-full items-center   justify-between    flex-col md:flex-row ">
-                        <div className="chatNavNameSection flex   space-y-0.5 pl-2  w-full py-2 flex-row  md:w-2/5 md:flex-col  ">
-                            <span className="chatUserName text-myMd ">{activeChatId.username} : {activeChatId.id}</span>
-                            <span className="chatUserStatus text-xs text-primary-dark-gray md:mx-0 mx-2 ">Online</span>
+                        <div className="chatNavNameSection flex   space-y-0.5 pl-2   w-full  md:py-4 flex-row  md:w-2/5 md:flex-col  ">
+                            <span className="chatUserName text-myMd mt-2">{activeChatId.username} : {activeChatId.id}</span>
+                            {/* <span className="chatUserStatus text-xs text-primary-dark-gray md:mx-0 mx-2 ">Online</span> */}
                         </div>
                         <div className="text-primary-dark-gray w-full ">
                             <ul className="flex items-center ">
@@ -234,7 +242,7 @@ function RightSideSection(props) {
                     </div>
                 </div>
                 <div className="chatContainer h-vh89 pt-2">
-                    <div style={{height:"92%"}} className="chatMainContainer overflow-y-scroll scrollbar w-full px-3" >
+                    <div style={{height:"92%"}} className="chatMainContainer overflow-y-scroll scrollbar w-full px-3" id="chatMainContainer">
 
                         {filteredMessages.map((message,ind) => (
                             ((message.recvId===username.userid && message.sender===activeChatIdSlice.username )||(message.sender===username.username && message.recvId===activeChatIdSlice.id) )? 

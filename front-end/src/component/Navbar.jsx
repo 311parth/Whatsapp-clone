@@ -145,7 +145,7 @@ function Navbar() {
                         {imageUrl && <img src={imageUrl} alt="Profile Image" className="w-10 h-10 rounded-full"/>}
                     </ul>
                     <ul className="w-3/5 px-3  h-full flex justify-around items-center  hover:cursor-pointer " >
-                        <li>
+                        {/* <li>
                             <i  className="material-icons text-primary-dark-gray  IconSize-lg   hover:text-primary-green">groups</i>
                         </li>
                         <li>
@@ -164,6 +164,17 @@ function Navbar() {
                                 <li className="text-sm  py-2.5 px-5 hover:bg-white">Settings</li>
                                 <li  className="text-sm w-full py-2.5 px-5 hover:bg-white" onClick={logout}>Logout</li>
                             </ul>
+                        </li> */}
+                        <li>
+                            <i  className="material-icons  text-primary-dark-gray  IconSize-lg   hover:text-primary-green" title="View Profile">account_circle</i>
+                        </li>
+                        <li>
+                            <i  className="material-icons text-primary-dark-gray  IconSize-lg   hover:text-primary-green" title="New Contact" onClick={()=>{
+                                    document.getElementById("newContactModal").classList.remove("hidden");
+                                }}>person_add</i>
+                        </li>
+                        <li>
+                            <i  className="material-icons text-primary-dark-gray  IconSize-lg   hover:text-primary-green" title="Logout" onClick={logout}>logout</i>
                         </li>
                     </ul>
                 </div>

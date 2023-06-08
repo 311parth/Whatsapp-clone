@@ -8,6 +8,7 @@ const fs = require("fs");
 const sharp = require("sharp");
 
 const { profileImageModel } = require("../model/profileImageModel");
+var profileImgFileTypeErrorStatus = false;
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -20,14 +21,19 @@ const storage = multer.diskStorage({
   });
   
   const fileFilter = (req, file, cb) => {
+    // console.log(file.mimetype)
     // reject a file
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
       cb(null, true);
       // console.log(0.5,Date.now())
     } else {
+      profileImgFileTypeErrorStatus=true;
       cb(null, false);
+      // console.log("rejected file")
+
     }
   };
+  
   const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
@@ -36,7 +42,12 @@ const storage = multer.diskStorage({
   
   
   async function saveProfileImgToDB(req, res, next) {
+
     try {
+      console.log(profileImgFileTypeErrorStatus)
+      if(profileImgFileTypeErrorStatus){
+        return res.json({"profilePic": 1});
+      } 
       if (req.file) {
         // console.log(req.file);
         sharp.cache(false);
@@ -84,8 +95,9 @@ const storage = multer.diskStorage({
           });
           next();
         });
+      }else{
+        return res.json({ "profilePic": 1 });
       }
-        
     } catch (error) {
       console.log(error)
     }

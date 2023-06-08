@@ -26,7 +26,7 @@ router.post("/",verifyAuthToken,async (req,res)=>{
     }
     var sharedId = loggedUserid>activeChatUserid ? loggedUserid.concat(activeChatUserid) : activeChatUserid.concat(loggedUserid) ;
     
-    var messagesQueryRes = await messagesModel.find({sharedId: sharedId }).sort({time:-1}).limit(5);
+    var messagesQueryRes = await messagesModel.find({sharedId: sharedId }).sort({time:-1}).limit(100);
     
     res.send({isok:1,sharedId:sharedId,messagesQueryRes : messagesQueryRes});
 
