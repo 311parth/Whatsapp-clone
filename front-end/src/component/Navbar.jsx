@@ -144,7 +144,7 @@ function Navbar() {
                     <ul className="p-3 w-2/5  flex items-center px-8">
                         {imageUrl && <img src={imageUrl} alt="Profile Image" className="w-10 h-10 rounded-full"/>}
                     </ul>
-                    <ul className="w-3/5 px-3  h-full flex justify-around items-center  hover:cursor-pointer " >
+                    <ul className="w-3/5 px-3  h-full flex justify-around items-center  hover:cursor-pointer [&>li]:flex " >
                         {/* <li>
                             <i  className="material-icons text-primary-dark-gray  IconSize-lg   hover:text-primary-green">groups</i>
                         </li>
